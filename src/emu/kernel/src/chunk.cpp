@@ -1,0 +1,267 @@
+/*
+ * Copyright (c) 2018 EKA2L1 Team.
+ * 
+ * This file is part of EKA2L1 project 
+ * (see bentokun.github.com/EKA2L1).
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#include <common/algorithm.h>
+#include <common/chunkyseri.h>
+#include <common/cvt.h>
+#include <common/log.h>
+#include <common/random.h>
+
+#include <kernel/chunk.h>
+#include <kernel/kernel.h>
+
+#include <mem/chunk.h>
+#include <mem/mem.h>
+#include <mem/process.h>
+
+#include <utils/err.h>
+
+namespace eka2l1 {
+    namespace kernel {
+        chunk::chunk(kernel_system *kern, memory_system *mem, kernel::process *own_process, std::string name,
+            address bottom, const address top, const size_t max_size, prot protection, chunk_type type, chunk_access chnk_access,
+            chunk_attrib attrib, const std::uint8_t clear_byte, const bool is_heap, const address force_addr,
+            void *force_host_map)
+            : kernel_obj(kern, name, own_process, access_type::local_access)
+            , mem(mem)
+            , is_heap(is_heap)
+            , type(type)
+            , pos_access(chnk_access) {
+            obj_type = object_type::chunk;
+
+            mem::mem_model_chunk_creation_info create_info{};
+
+            create_info.perm = protection;
+            create_info.size = max_size;
+
+            if (chnk_access == chunk_access::global) {
+                access = access_type::global_access;
+                create_info.flags |= mem::MEM_MODEL_CHUNK_REGION_USER_GLOBAL;
+            }
+
+            if (attrib == chunk_attrib::anonymous) {
+                // Don't use the name given by that, it's anonymous omg!!!
+                obj_name = "anonymous" + common::to_string(eka2l1::random());
+            }
+
+            if (chnk_access == chunk_access::local) {
+                create_info.flags |= mem::MEM_MODEL_CHUNK_REGION_USER_LOCAL;
+
+                if (name == "") {
+                    obj_name = "local" + common::to_string(eka2l1::random());
+                }
+            }
+
+            if (chnk_access == chunk_access::code) {
+                obj_name = "code" + common::to_string(eka2l1::random());
+                create_info.flags |= mem::MEM_MODEL_CHUNK_REGION_USER_CODE;
+            }
+
+            if (chnk_access == chunk_access::rom) {
+                create_info.flags |= mem::MEM_MODEL_CHUNK_REGION_USER_ROM;
+            }
+
+            if (chnk_access == chunk_access::kernel_mapping) {
+                create_info.flags |= mem::MEM_MODEL_CHUNK_REGION_KERNEL_MAPPING;
+            }
+
+            if (chnk_access == chunk_access::dll_static_data) {
+                create_info.flags |= mem::MEM_MODEL_CHUNK_REGION_DLL_STATIC_DATA;
+            }
+
+            switch (type) {
+            case chunk_type::disconnected: {
+                create_info.flags |= mem::MEM_MODEL_CHUNK_TYPE_DISCONNECT;
+                break;
+            }
+
+            case chunk_type::double_ended: {
+                create_info.flags |= mem::MEM_MODEL_CHUNK_TYPE_DOUBLE_ENDED;
+                break;
+            }
+
+            case chunk_type::normal: {
+                create_info.flags |= mem::MEM_MODEL_CHUNK_TYPE_NORMAL;
+                break;
+            }
+
+            default:
+                break;
+            }
+
+            create_info.addr = force_addr;
+            create_info.host_map = force_host_map;
+
+            mmc_impl_ = nullptr;
+            mem::mem_model_process *mmp = nullptr;
+
+            int err = 0;
+
+            if (own_process && own_process->get_mem_model()) {
+                mmp = own_process->get_mem_model();
+                err = mmp->create_chunk(mmc_impl_, create_info);
+
+                if (err != mem::MEM_MODEL_CHUNK_ERR_OK) {
+                    if (chnk_access == chunk_access::code) {
+                        kern->get_codedump_collector().force_clean();
+                        err = mmp->create_chunk(mmc_impl_, create_info);
+                    }
+                }
+            } else {
+                mmc_impl_unq_ = mem::make_new_mem_model_chunk(mem->get_control(), 0, mem->get_model_type());
+                err = mmc_impl_unq_->do_create(create_info);
+
+                if (err != mem::MEM_MODEL_CHUNK_ERR_OK) {
+                    if (chnk_access == chunk_access::code) {
+                        kern->get_codedump_collector().force_clean();
+                        err = mmc_impl_unq_->do_create(create_info);
+                    }
+                }
+
+                mmc_impl_ = mmc_impl_unq_.get();
+            }
+
+            if (err != mem::MEM_MODEL_CHUNK_ERR_OK) {
+                LOG_ERROR(KERNEL, "Failed to allocate mem model chunk: {}, error: {}", obj_name, err);
+            } else {
+                mmc_impl_->adjust(bottom, top);
+
+                // Clear the adjusted memory with clear byte.
+                // Note that the doc does not specify if this is used in future. I don't think it will.
+                // Please look at t_chunk.cpp test in mmu category of OSS. It has only been tested on chunk creation.
+                if (!force_host_map) {
+                    std::uint8_t *base_ptr = reinterpret_cast<std::uint8_t *>(mmc_impl_->host_base());
+                    std::fill(base_ptr + bottom, base_ptr + top, clear_byte);
+                }
+
+                LOG_INFO(KERNEL, "Chunk created: {}, base (in parent): 0x{:x}, max size: 0x{:x} type: {}, access: {}{}", obj_name,
+                    mmc_impl_->base(mmp), max_size, (type == chunk_type::normal ? "normal" : (type == chunk_type::disconnected ? "disconnected" : "double ended")),
+                    (chnk_access == chunk_access::local ? "local" : (chnk_access == chunk_access::code ? "code " : "global")),
+                    (attrib == chunk_attrib::anonymous ? ", anonymous" : ""));
+            }
+        }
+
+        int chunk::destroy() {
+            kernel::process *own = get_own_process();
+
+            if (!mmc_impl_unq_) {
+                if (own->get_mem_model())
+                    own->get_mem_model()->delete_chunk(mmc_impl_);
+            } else {
+                mmc_impl_unq_.reset();
+            }
+
+            if (own)
+                own->decrease_access_count();
+
+            return 0;
+        }
+
+        void chunk::open_to(process *own) {
+            if (own)
+                own->get_mem_model()->attach_chunk(mmc_impl_);
+        }
+
+        ptr<uint8_t> chunk::base(process *pr) {
+            return mmc_impl_->base(pr ? pr->get_mem_model() : nullptr);
+        }
+
+        const std::size_t chunk::max_size() const {
+            return mmc_impl_->max();
+        }
+
+        const std::size_t chunk::committed() const {
+            return mmc_impl_->committed();
+        }
+
+        const std::uint32_t chunk::bottom_offset() const {
+            return mmc_impl_->bottom();
+        }
+
+        const std::uint32_t chunk::top_offset() const {
+            return mmc_impl_->top();
+        }
+
+        std::int32_t chunk::commit_symbian_compat(uint32_t offset, size_t size) {
+            if (type != kernel::chunk_type::disconnected) {
+                return epoc::error_general;
+            }
+
+            std::size_t ret_value = mmc_impl_->commit(offset, size, false);
+
+            if (ret_value == 0) {
+                return epoc::error_no_memory;
+            } else if (ret_value == static_cast<std::size_t>(-1)) {
+                return epoc::error_already_exists;
+            }
+
+            return epoc::error_none;
+        }
+
+        bool chunk::commit(uint32_t offset, size_t size) {
+            if (type != kernel::chunk_type::disconnected) {
+                return false;
+            }
+
+            if (mmc_impl_->commit(offset, size) == 0) {
+                return false;
+            }
+
+            return true;
+        }
+
+        bool chunk::decommit(uint32_t offset, size_t size) {
+            if (type != kernel::chunk_type::disconnected) {
+                return false;
+            }
+
+            mmc_impl_->decommit(offset, size);
+            return true;
+        }
+
+        bool chunk::adjust(std::size_t adj_size) {
+            if (type == kernel::chunk_type::disconnected) {
+                return false;
+            }
+
+            return mmc_impl_->adjust(0xFFFFFFFF, static_cast<address>(adj_size));
+        }
+
+        bool chunk::adjust_de(size_t nbottom, size_t ntop) {
+            if (type != kernel::chunk_type::double_ended) {
+                return false;
+            }
+
+            return mmc_impl_->adjust(static_cast<address>(nbottom), static_cast<address>(ntop));
+        }
+
+        std::int32_t chunk::allocate(size_t size) {
+            if (type != kernel::chunk_type::disconnected) {
+                return -1;
+            }
+
+            return mmc_impl_->allocate(size);
+        }
+
+        void *chunk::host_base() {
+            return mmc_impl_->host_base();
+        }
+    }
+}

@@ -1,0 +1,344 @@
+/*
+ * Copyright (c) 2019 EKA2L1 Team.
+ * 
+ * This file is part of EKA2L1 project 
+ * (see bentokun.github.com/EKA2L1).
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#include <common/bitmap.h>
+#include <common/buffer.h>
+#include <common/log.h>
+#include <common/runlen.h>
+#include <common/virtualmem.h>
+
+#include <loader/mbm.h>
+
+namespace eka2l1::loader {
+    bool sbm_header::internalize(common::ro_stream &stream) {
+        std::uint64_t total_read = 0;
+        total_read += stream.read(&bitmap_size, sizeof(std::uint32_t));
+        total_read += stream.read(&header_len, sizeof(std::uint32_t));
+        total_read += stream.read(&size_pixels.x, sizeof(std::int32_t));
+        total_read += stream.read(&size_pixels.y, sizeof(std::int32_t));
+        total_read += stream.read(&size_twips.x, sizeof(std::int32_t));
+        total_read += stream.read(&size_twips.y, sizeof(std::int32_t));
+        total_read += stream.read(&bit_per_pixels, sizeof(std::uint32_t));
+        total_read += stream.read(&color, sizeof(std::uint32_t));
+        total_read += stream.read(&palette_size, sizeof(std::uint32_t));
+        total_read += stream.read(&compression, sizeof(std::uint32_t));
+
+        return (total_read == sizeof(sbm_header));
+    }
+
+    bool mbm_file::valid() {
+        return header.uids.uid1 == 0x10000041
+			|| (header.uids.uid1 == 0x10000037 && header.uids.uid2 == 0x10000042);
+    }
+
+    bool mbm_file::is_header_loaded(const std::size_t index) const {
+        return (trailer.count > 0) && (index < trailer.count) && (trailer.sbm_offsets[index]);
+    }
+
+    bool mbm_file::do_read_headers() {
+        if (stream->read(&header, sizeof(uint32_t)) != sizeof(uint32_t)) {
+            return false;
+        }
+        if (header.uids.uid1 == 0x10000041) {
+            is_rom_version = true;
+            header.trailer_off = 4;
+        } else {
+            is_rom_version = false;
+
+            stream->seek(0, common::seek_where::beg);
+            if (stream->read(&header, sizeof(header)) != sizeof(header)) {
+                return false;
+            }
+        }
+
+        stream->seek(header.trailer_off, common::seek_where::beg);
+
+        // Go to trailer, let's grab all those single bitmap header offsets
+        if (stream->read(&trailer.count, sizeof(trailer.count)) != sizeof(trailer.count)) {
+            return false;
+        }
+
+        if (trailer.count > 0xFFFF) {
+            return false;
+        }
+
+        trailer.sbm_offsets.resize(trailer.count);
+        std::fill(trailer.sbm_offsets.begin(), trailer.sbm_offsets.end(), 0);
+
+        sbm_headers.resize(trailer.count);
+
+        auto do_load_header = [this](const std::size_t index) {
+            stream->seek(header.trailer_off + (index + 1) * 4, common::seek_where::beg);
+
+            if (stream->read(&trailer.sbm_offsets[index], 4) != 4) {
+                return false;
+            }
+
+            // Remember the current offset first
+            if (is_rom_version) {
+                stream->seek(trailer.sbm_offsets[index] + 5 * sizeof(std::uint32_t), common::seek_where::beg);
+            } else {
+                stream->seek(trailer.sbm_offsets[index], common::seek_where::beg);
+            }
+
+            if (!sbm_headers[index].internalize(*stream)) {
+                return false;
+            }
+
+            return true;
+        };
+
+        if (index_to_loads.empty()) {
+            for (std::size_t i = 0; i < trailer.sbm_offsets.size(); i++) {
+                if (!do_load_header(i))
+                    return false;
+            }
+        } else {
+            for (const std::size_t i : index_to_loads) {
+                if (!do_load_header(i))
+                    return false;
+
+                if (is_rom_version && ((i + 1) < trailer.sbm_offsets.size())) {
+                    if (!do_load_header(i + 1)) {
+                        return false;
+                    }
+                }
+            }
+
+            index_to_loads.clear();
+        }
+
+        return valid();
+    }
+
+    bool mbm_file::read_single_bitmap_raw(const std::size_t index, std::uint8_t *dest,
+        std::size_t &dest_max) {
+        if (!is_header_loaded(index)) {
+            return false;
+        }
+
+        sbm_header &single_bm_header = sbm_headers[index];
+
+        // If the dest pointer is null or the size are not sufficent enough, dest_max will contains
+        // the required size.
+        if (dest == nullptr || dest_max < single_bm_header.bitmap_size - single_bm_header.header_len) {
+            dest_max = single_bm_header.bitmap_size - single_bm_header.header_len;
+            return (dest == nullptr) ? true : false;
+        }
+
+        std::size_t data_offset = bitmap_data_offset(index);
+
+        const std::size_t size_to_get = common::min<std::size_t>(dest_max, single_bm_header.bitmap_size - single_bm_header.header_len);
+
+        const auto crr_pos = stream->tell();
+        stream->seek(data_offset, common::beg);
+
+        bool result = true;
+
+        // Assign with number of bytes we are getting.
+        dest_max = stream->read(dest, size_to_get);
+
+        // If the size read is not equal to the size function caller requested, we fail
+        if (dest_max != size_to_get) {
+            result = false;
+        }
+
+        stream->seek(crr_pos, common::beg);
+
+        return result;
+    }
+
+    bool mbm_file::read_single_bitmap(const std::size_t index, std::uint8_t *dest, std::size_t &dest_max) {
+        if (!is_header_loaded(index)) {
+            return false;
+        }
+
+        sbm_header &single_bm_header = sbm_headers[index];
+        std::size_t data_offset = bitmap_data_offset(index);
+
+        const auto crr_pos = stream->tell();
+        stream->seek(data_offset, common::beg);
+
+        bool success = true;
+
+        std::size_t compressed_size = common::min<std::size_t>(static_cast<std::size_t>(stream->left()),
+            static_cast<std::size_t>(single_bm_header.bitmap_size - single_bm_header.header_len));
+
+        if (single_bm_header.compression == 0) {
+            dest_max = compressed_size;
+
+            if (dest) {
+                stream->read(dest, dest_max);
+            }
+        } else {
+            if (compressed_size < common::MB(5)) {
+                std::vector<std::uint8_t> source_data(compressed_size);
+                stream->read(source_data.data(), source_data.size());
+
+                switch (single_bm_header.compression) {
+                case 1: {
+                    eka2l1::decompress_rle_fast_route<8>(source_data.data(), source_data.size(), dest, dest_max);
+                    break;
+                }
+
+                case 2: {
+                    eka2l1::decompress_rle_fast_route<12>(source_data.data(), source_data.size(), dest, dest_max);
+                    break;
+                }
+
+                case 3: {
+                    eka2l1::decompress_rle_fast_route<16>(source_data.data(), source_data.size(), dest, dest_max);
+                    break;
+                }
+
+                case 4: {
+                    eka2l1::decompress_rle_fast_route<24>(source_data.data(), source_data.size(), dest, dest_max);
+                    break;
+                }
+
+                default: {
+                    LOG_ERROR(LOADER, "Unsupport RLE compression type {}", single_bm_header.compression);
+                    stream->seek(crr_pos, common::beg);
+
+                    return false;
+                }
+                }
+            } else {
+                common::wo_buf_stream dest_stream(dest, dest_max ? dest_max : 0xFFFFFFFF);
+
+                switch (single_bm_header.compression) {
+                case 1: {
+                    eka2l1::decompress_rle<8>(stream, reinterpret_cast<common::wo_stream *>(&dest_stream));
+                    dest_max = dest_stream.tell();
+
+                    break;
+                }
+
+                case 2: {
+                    eka2l1::decompress_rle<12>(stream, reinterpret_cast<common::wo_stream *>(&dest_stream));
+                    dest_max = dest_stream.tell();
+
+                    break;
+                }
+
+                case 3: {
+                    eka2l1::decompress_rle<16>(stream, reinterpret_cast<common::wo_stream *>(&dest_stream));
+                    dest_max = dest_stream.tell();
+
+                    break;
+                }
+
+                case 4: {
+                    eka2l1::decompress_rle<24>(stream, reinterpret_cast<common::wo_stream *>(&dest_stream));
+                    dest_max = dest_stream.tell();
+
+                    break;
+                }
+
+                default: {
+                    LOG_ERROR(LOADER, "Unsupport RLE compression type {}", single_bm_header.compression);
+                    stream->seek(crr_pos, common::beg);
+
+                    return false;
+                }
+                }
+            }
+        }
+
+        stream->seek(crr_pos, common::beg);
+        return true;
+    }
+
+    bool mbm_file::save_bitmap_to_file(const std::size_t index, const char *name) {
+        if (!is_header_loaded(index)) {
+            return false;
+        }
+
+        std::size_t uncompressed_size = 0;
+
+        if (!read_single_bitmap(index, nullptr, uncompressed_size)) {
+            return false;
+        }
+
+        // Calculate uncompressed size first
+        std::size_t bitmap_file_size = sizeof(common::bmp_header) + sizeof(common::dib_header_v1)
+            + uncompressed_size;
+
+        std::uint8_t *buf = reinterpret_cast<std::uint8_t *>(
+            common::map_file(name, prot_read_write, bitmap_file_size));
+
+        if (!buf) {
+            return false;
+        }
+
+        common::bmp_header header;
+        header.file_size = static_cast<std::uint32_t>(bitmap_file_size);
+        header.pixel_array_offset = static_cast<std::uint32_t>(bitmap_file_size - uncompressed_size);
+
+        common::wo_buf_stream stream(buf);
+        stream.write(&header, sizeof(header));
+
+        sbm_header &single_bm_header = sbm_headers[index];
+
+        common::dib_header_v1 dib_header;
+        dib_header.bit_per_pixels = single_bm_header.bit_per_pixels;
+        dib_header.color_plane_count = 1;
+        dib_header.comp = 0;
+        dib_header.important_color_count = 0;
+        dib_header.palette_count = single_bm_header.palette_size;
+        dib_header.size = single_bm_header.size_pixels;
+        dib_header.print_res = single_bm_header.size_twips;
+        dib_header.uncompressed_size = static_cast<std::uint32_t>(uncompressed_size);
+
+        // BMP are stored upside-down, use this to force them displays normally
+        dib_header.size.y = -dib_header.size.y;
+        dib_header.print_res.y = -dib_header.print_res.y;
+
+        stream.write(&dib_header, dib_header.header_size);
+
+        if (!read_single_bitmap(index, stream.get_current(), uncompressed_size)) {
+            return false;
+        }
+
+        common::unmap_file(buf);
+
+        return true;
+    }
+
+    std::size_t mbm_file::bitmap_data_offset(const std::size_t index) {
+        if (!is_header_loaded(index)) {
+            return false;
+        }
+
+        sbm_header &single_bm_header = sbm_headers[index];
+        
+        std::size_t data_offset = 0;
+
+        if (is_rom_version) {
+            // They are usually aligned by 4, then data got padded at the end and the size increased
+            data_offset = ((index == trailer.sbm_offsets.size() - 1) ? stream->size() : trailer.sbm_offsets[index + 1])
+                 - (single_bm_header.bitmap_size - single_bm_header.header_len) & (~3);
+        } else {
+            data_offset = trailer.sbm_offsets[index] + single_bm_header.header_len;
+        }
+
+        return data_offset;
+    }
+}

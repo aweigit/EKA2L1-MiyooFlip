@@ -1,0 +1,99 @@
+set(GNUVG_SOURCES
+        include/dispatch/libraries/vg/gnuVG_config.hh
+        include/dispatch/libraries/vg/gnuVG_context.hh
+        include/dispatch/libraries/vg/gnuVG_emuutils.hh
+        include/dispatch/libraries/vg/gnuVG_error.hh
+        include/dispatch/libraries/vg/gnuVG_font.hh
+        include/dispatch/libraries/vg/gnuVG_gaussianblur.hh
+        include/dispatch/libraries/vg/gnuVG_idallocator.hh
+        include/dispatch/libraries/vg/gnuVG_image.hh
+        include/dispatch/libraries/vg/gnuVG_mask.hh
+        include/dispatch/libraries/vg/gnuVG_math.hh
+        include/dispatch/libraries/vg/gnuVG_memclasses.hh
+        include/dispatch/libraries/vg/gnuVG_object.hh
+        include/dispatch/libraries/vg/gnuVG_paint.hh
+        include/dispatch/libraries/vg/gnuVG_path.hh
+        include/dispatch/libraries/vg/gnuVG_shader.hh
+        include/dispatch/libraries/vg/gnuVG_shaderman.hh
+        include/dispatch/libraries/vg/gnuVG_simplified_path.hh
+        include/dispatch/libraries/vg/gnuVG_vgu.hh
+        src/libraries/vg/gnuVG_context.cc
+        src/libraries/vg/gnuVG_emuutils.cc
+        src/libraries/vg/gnuVG_filter.cc
+        src/libraries/vg/gnuVG_font.cc
+        src/libraries/vg/gnuVG_image.cc
+        src/libraries/vg/gnuVG_mask.cc
+        src/libraries/vg/gnuVG_math.cc
+        src/libraries/vg/gnuVG_memclasses.cc
+        src/libraries/vg/gnuVG_object.cc
+        src/libraries/vg/gnuVG_paint.cc
+        src/libraries/vg/gnuVG_path.cc
+        src/libraries/vg/gnuVG_shader.cc
+        src/libraries/vg/gnuVG_shaderman.cc
+        src/libraries/vg/gnuVG_simplified_path.cc
+        src/libraries/vg/gnuVG_vgu.cc
+)
+
+add_library(epocdispatch
+        include/dispatch/libraries/egl/def.h
+        include/dispatch/libraries/egl/egl.h
+        include/dispatch/libraries/gles_shared/consts.h
+        include/dispatch/libraries/gles_shared/def.h
+        include/dispatch/libraries/gles_shared/gles_shared.h
+        include/dispatch/libraries/gles_shared/utils.h
+        include/dispatch/libraries/gles1/def.h
+        include/dispatch/libraries/gles1/gles1.h
+        include/dispatch/libraries/gles1/shadergen.h
+        include/dispatch/libraries/gles1/shaderman.h
+        include/dispatch/libraries/gles2/def.h
+        include/dispatch/libraries/gles2/gles2.h
+        include/dispatch/libraries/gles2/register.h
+        include/dispatch/libraries/sysutils/functions.h
+        include/dispatch/libraries/sysutils/register.h
+        include/dispatch/libraries/buffer_pusher.h
+        include/dispatch/libraries/register.h
+        include/dispatch/audio.h
+        include/dispatch/camera.h
+        include/dispatch/def.h
+        include/dispatch/dispatcher.h
+        include/dispatch/hui.h
+        include/dispatch/management.h
+        include/dispatch/register.h
+        include/dispatch/screen.h
+        include/dispatch/video.h
+        src/libraries/egl/def.cpp
+        src/libraries/egl/egl.cpp
+        src/libraries/gles_shared/gles_shared.cpp
+        src/libraries/gles1/gles1.cpp
+        src/libraries/gles1/shadergen.cpp
+        src/libraries/gles1/shaderman.cpp
+        src/libraries/gles2/gles2.cpp
+        src/libraries/sysutils/functions.cpp
+        src/libraries/buffer_pusher.cpp
+        src/libraries/register.cpp
+        src/audio.cpp
+        src/camera.cpp
+        src/dispatcher.cpp
+        src/hui.cpp
+        src/register.cpp
+        src/screen.cpp
+        src/video.cpp
+        ${GNUVG_SOURCES})
+target_compile_options(epocdispatch PRIVATE -fPIC) 
+
+target_include_directories(epocdispatch PUBLIC include)
+
+target_link_libraries(epocdispatch PUBLIC
+        bridge
+        common)
+
+target_link_libraries(epocdispatch PRIVATE
+        drivers
+        epoc
+        epockern
+        epocpkg
+        epocservs
+        glm
+        libtess2
+        RectangleBinPack
+        xxHash)

@@ -1,0 +1,9 @@
+.DS_Store
+obj/
+local.properties
+out/
+bin/
+gen/
+.idea/
+xcuserdata/
+minibae/Tools/playbae/playbae

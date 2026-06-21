@@ -1,0 +1,44 @@
+if (WIN32)
+    add_definitions(-DNOMINMAX)
+    message("NOMINMAX")
+
+    if (MSVC AND ENABLE_SEH_HANDLER)
+        # Replace SEH flag if there is one
+        string(REGEX REPLACE "\/(EH).+" "\/EHa" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHa")
+    endif ()
+endif ()
+
+# Many of our code are optimized to utilize offsetof.
+# But it complains a lot with non-POD type, that's not what we want, so disable the warn flag.
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|GNU")
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "10.14" CACHE STRING "Minimum OS X version to target for deployment" FORCE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-invalid-offsetof")
+endif ()
+
+add_subdirectory(bridge)
+add_subdirectory(common)
+add_subdirectory(config)
+add_subdirectory(cpu)
+add_subdirectory(disasm)
+add_subdirectory(dispatch)
+add_subdirectory(drivers)
+add_subdirectory(gdbstub)
+add_subdirectory(j2me)
+add_subdirectory(kernel)
+add_subdirectory(ldd)
+add_subdirectory(loader)
+add_subdirectory(mem)
+add_subdirectory(package)
+add_subdirectory(services)
+add_subdirectory(system)
+add_subdirectory(utils)
+add_subdirectory(vfs)
+
+if (LINUX_SDL2)
+    add_subdirectory(sdl2emu)
+endif()
+
+if (EKA2L1_ENABLE_SCRIPTING_ABILITY)
+    add_subdirectory(scripting)
+endif ()

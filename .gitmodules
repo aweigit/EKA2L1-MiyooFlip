@@ -1,0 +1,105 @@
+[submodule "src/external/spdlog"]
+	path = src/external/spdlog
+	url = https://github.com/gabime/spdlog
+[submodule "src/external/glfw"]
+	path = src/external/glfw
+	url = https://github.com/glfw/glfw
+[submodule "src/external/capstone"]
+	path = src/external/capstone
+	url = https://github.com/aquynh/capstone
+[submodule "src/external/yaml-cpp"]
+	path = src/external/yaml-cpp
+	url = https://github.com/jbeder/yaml-cpp
+[submodule "src/external/libcxxabi"]
+	path = src/external/libcxxabi
+	url = https://github.com/llvm-mirror/libcxxabi
+[submodule "src/external/glm"]
+	path = src/external/glm
+	url = https://github.com/g-truc/glm
+[submodule "dynarmic"]
+	path = src/external/dynarmic
+	url = https://github.com/EKA2L1/dynarmic
+[submodule "src/external/fmt"]
+	path = src/external/fmt
+	url = https://github.com/fmtlib/fmt
+[submodule "src/external/microprofile"]
+	path = src/external/microprofile
+	url = https://github.com/jonasmr/microprofile/
+[submodule "src/external/stb"]
+	path = src/external/stb
+	url = https://github.com/nothings/stb
+[submodule "src/external/Catch2"]
+	path = src/external/Catch2
+	url = https://github.com/catchorg/Catch2/
+[submodule "src/external/xxHash"]
+	path = src/external/xxHash
+	url = https://github.com/Cyan4973/xxHash
+[submodule "src/external/pugixml"]
+	path = src/external/pugixml
+	url = https://github.com/zeux/pugixml
+[submodule "src/external/cubeb"]
+	path = src/external/cubeb
+	url = https://github.com/kinetiknz/cubeb
+[submodule "src/external/ffmpeg"]
+	path = src/external/ffmpeg
+	url = https://github.com/eka2l1/ffmpeg
+[submodule "src/external/luajit"]
+	path = src/external/luajit
+	url = https://github.com/luajit/luajit
+[submodule "src/external/libfat"]
+	path = src/external/libfat
+	url = https://github.com/Vita3K/libfat16/
+[submodule "src/external/lunasvg"]
+	path = src/external/lunasvg
+	url = https://github.com/EKA2L1/lunasvg
+[submodule "src/external/mbedtls"]
+	path = src/external/mbedtls
+	url = https://github.com/ARMmbed/mbedtls
+[submodule "src/external/miniBAE"]
+	path = src/external/miniBAE
+	url = https://github.com/EKA2L1/miniBAE/
+[submodule "src/external/TinySoundFont"]
+	path = src/external/TinySoundFont
+	url = https://github.com/schellingb/TinySoundFont
+[submodule "src/external/sdl2-cmake-scripts"]
+	path = src/external/sdl2-cmake-scripts
+	url = https://github.com/tcbrindle/sdl2-cmake-scripts
+[submodule "src/external/SDL_GameControllerDB"]
+	path = src/external/SDL_GameControllerDB
+	url = https://github.com/gabomdq/SDL_GameControllerDB
+[submodule "src/emu/drivers/resources/upscale"]
+	path = src/emu/drivers/resources/upscale
+	url = https://github.com/EKA2L1/upscale-shaders
+[submodule "src/external/libuv"]
+	path = src/external/libuv
+	url = https://github.com/libuv/libuv
+[submodule "src/external/miniupnp"]
+	path = src/external/miniupnp
+	url = https://github.com/miniupnp/miniupnp
+[submodule "src/external/libtess2"]
+	path = src/external/libtess2
+	url = https://github.com/memononen/libtess2
+[submodule "src/external/RectangleBinPack"]
+	path = src/external/RectangleBinPack
+	url = https://github.com/juj/RectangleBinPack
+[submodule "src/external/uvw"]
+	path = src/external/uvw
+	url = https://github.com/skypjack/uvw/
+[submodule "src/external/re2"]
+	path = src/external/re2
+	url = https://github.com/google/re2
+[submodule "src/external/thread-pool"]
+	path = src/external/thread-pool
+	url = https://github.com/bshoshany/thread-pool
+[submodule "src/external/luajit-cmake"]
+	path = src/external/luajit-cmake
+	url = https://github.com/zhaozg/luajit-cmake
+[submodule "src/external/ext-boost"]
+	path = src/external/ext-boost
+	url = https://github.com/yuzu-mirror/ext-boost
+[submodule "src/external/luajit-android-src"]
+	path = src/external/luajit-android-src
+	url = https://github.com/luajit/luajit
+[submodule "src/external/freetype"]
+	path = src/external/freetype
+	url = https://github.com/freetype/freetype

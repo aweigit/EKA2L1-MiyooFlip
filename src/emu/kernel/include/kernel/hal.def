@@ -1,0 +1,46 @@
+/*
+ * Copyright (c) 2019 EKA2L1 Team.
+ * 
+ * This file is part of EKA2L1 project.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+// Convention:
+// HAL_ENTRY(generic_name, display_name, key, key_old)
+
+#ifndef HAL_ENTRY
+#define HAL_ENTRY(a, b, c, d)
+#endif
+
+HAL_ENTRY(machine_info, MachineInfo, 0xFFFFFFFF, 0)
+HAL_ENTRY(memory_info, MemoryInfo, 0xFFFFFFFF, 1)
+HAL_ENTRY(manufacturer, Manufacturer, 0, 0xFFFFFFFF)
+HAL_ENTRY(manufacturer_hardware_rev, ManufacturerHardwareRev, 1, 0xFFFFFFFF)
+HAL_ENTRY(machine_uid, MachineUID, 5, 0)
+HAL_ENTRY(cpu, CPU, 8, 0)
+HAL_ENTRY(ram, RAMSize, 15, 0)
+HAL_ENTRY(page_size, PageSize, 18, 8)
+HAL_ENTRY(tick_period, TickPeriod, 0, 10)
+HAL_ENTRY(display_screen_x_pixels, ScreenXPixels, 31, 0)
+HAL_ENTRY(display_screen_y_pixels, ScreenYPixels, 32, 0)
+HAL_ENTRY(display_contrast_max, DisplayContrastMax, 0, 38)
+HAL_ENTRY(display_memory_address, DisplayMemoryAddress, 0, 78)
+HAL_ENTRY(screen_info, ScreenInfo, 0, 0xC00000)
+HAL_ENTRY(video_info, VideoInfo, 0, 0xC00001)
+HAL_ENTRY(screen_num_of_colors, ScreenNumOfColors, 0, 0xC00002)
+
+#ifdef HAL_ENTRY
+#undef HAL_ENTRY
+#endif

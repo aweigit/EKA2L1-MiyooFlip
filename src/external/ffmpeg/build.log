@@ -1,0 +1,1282 @@
+GEN	libavutil/libavutil.version
+GEN	libswscale/libswscale.version
+GEN	libswresample/libswresample.version
+GEN	libavcodec/libavcodec.version
+GEN	libavformat/libavformat.version
+INSTALL	doc/examples/scaling_video.c
+INSTALL	doc/examples/encode_video.c
+INSTALL	doc/examples/transcode_aac.c
+INSTALL	doc/examples/filter_audio.c
+INSTALL	doc/examples/decode_audio.c
+INSTALL	doc/examples/avio_list_dir.c
+INSTALL	doc/examples/qsvdec.c
+INSTALL	doc/examples/vaapi_encode.c
+INSTALL	doc/examples/avio_reading.c
+INSTALL	doc/examples/extract_mvs.c
+INSTALL	doc/examples/remuxing.c
+INSTALL	doc/examples/metadata.c
+INSTALL	doc/examples/resampling_audio.c
+INSTALL	doc/examples/decode_video.c
+INSTALL	doc/examples/http_multiclient.c
+INSTALL	doc/examples/filtering_audio.c
+INSTALL	doc/examples/hw_decode.c
+INSTALL	doc/examples/encode_audio.c
+INSTALL	doc/examples/muxing.c
+INSTALL	doc/examples/filtering_video.c
+INSTALL	doc/examples/demuxing_decoding.c
+INSTALL	doc/examples/vaapi_transcode.c
+INSTALL	doc/examples/transcoding.c
+INSTALL	doc/examples/README
+INSTALL	doc/examples/Makefile
+INSTALL	doc/examples/scaling_video.c
+INSTALL	doc/examples/encode_video.c
+INSTALL	doc/examples/transcode_aac.c
+INSTALL	doc/examples/filter_audio.c
+INSTALL	doc/examples/decode_audio.c
+INSTALL	doc/examples/avio_list_dir.c
+INSTALL	doc/examples/qsvdec.c
+INSTALL	doc/examples/vaapi_encode.c
+INSTALL	doc/examples/avio_reading.c
+INSTALL	doc/examples/extract_mvs.c
+INSTALL	doc/examples/remuxing.c
+INSTALL	doc/examples/metadata.c
+INSTALL	doc/examples/resampling_audio.c
+INSTALL	doc/examples/decode_video.c
+INSTALL	doc/examples/http_multiclient.c
+INSTALL	doc/examples/filtering_audio.c
+INSTALL	doc/examples/hw_decode.c
+INSTALL	doc/examples/encode_audio.c
+INSTALL	doc/examples/muxing.c
+INSTALL	doc/examples/filtering_video.c
+INSTALL	doc/examples/demuxing_decoding.c
+INSTALL	doc/examples/vaapi_transcode.c
+INSTALL	doc/examples/transcoding.c
+INSTALL	doc/examples/README
+INSTALL	doc/examples/Makefile
+CC	libavformat/aacdec.o
+aacdec.c
+CC	libavformat/allformats.o
+allformats.c
+CC	libavformat/amr.o
+amr.c
+CC	libavformat/apetag.o
+apetag.c
+libavformat/apetag.c(204): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+CC	libavformat/avidec.o
+avidec.c
+CC	libavformat/avienc.o
+avienc.c
+CC	libavformat/avio.o
+avio.c
+libavformat/avio.c(114): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+libavformat/avio.c(277): warning C4090: 'function': different 'const' qualifiers
+libavformat/avio.c(282): warning C4090: 'function': different 'const' qualifiers
+libavformat/avio.c(286): warning C4090: 'function': different 'const' qualifiers
+CC	libavformat/aviobuf.o
+aviobuf.c
+libavformat/aviobuf.c(387): warning C4267: '+=': conversion from 'size_t' to 'int', possible loss of data
+libavformat/aviobuf.c(1219): warning C4267: 'function': conversion from 'size_t' to 'int', possible loss of data
+libavformat/aviobuf.c(1253): warning C4267: 'function': conversion from 'size_t' to 'int', possible loss of data
+CC	libavformat/avlanguage.o
+avlanguage.c
+CC	libavformat/cutils.o
+cutils.c
+CC	libavformat/dump.o
+dump.c
+CC	libavformat/file.o
+file.c
+CC	libavformat/file_open.o
+file_open.c
+CC	libavformat/format.o
+format.c
+libavformat/format.c(308): warning C4090: 'function': different 'const' qualifiers
+CC	libavformat/h264dec.o
+h264dec.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec/get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavformat/id3v1.o
+id3v1.c
+CC	libavformat/id3v2.o
+id3v2.c
+libavformat/id3v2.c(348): warning C4090: 'function': different 'const' qualifiers
+CC	libavformat/id3v2enc.o
+id3v2enc.c
+libavformat/id3v2enc.c(118): warning C4267: 'function': conversion from 'size_t' to 'int', possible loss of data
+CC	libavformat/img2.o
+img2.c
+CC	libavformat/isom.o
+isom.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavformat/metadata.o
+metadata.c
+CC	libavformat/mp3dec.o
+mp3dec.c
+CC	libavformat/mp3enc.o
+mp3enc.c
+libavformat/mp3enc.c(311): warning C4101: 'base': unreferenced local variable
+CC	libavformat/mpegtsenc.o
+mpegtsenc.c
+libavformat/mpegtsenc.c(703): warning C4267: '=': conversion from 'size_t' to 'uint8_t', possible loss of data
+libavformat/mpegtsenc.c(713): warning C4267: '=': conversion from 'size_t' to 'uint8_t', possible loss of data
+CC	libavformat/mpegvideodec.o
+mpegvideodec.c
+CC	libavformat/mux.o
+mux.c
+CC	libavformat/oggenc.o
+oggenc.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavformat/options.o
+options.c
+libavformat/options.c(64): warning C4996: 'av_iformat_next': was declared deprecated
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavformat\avformat.h(2089): note: see declaration of 'av_iformat_next'
+libavformat/options.c(69): warning C4996: 'av_oformat_next': was declared deprecated
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavformat\avformat.h(2097): note: see declaration of 'av_oformat_next'
+libavformat/options.c(73): warning C4996: 'av_iformat_next': was declared deprecated
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavformat\avformat.h(2089): note: see declaration of 'av_iformat_next'
+libavformat/options.c(77): warning C4996: 'av_oformat_next': was declared deprecated
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavformat\avformat.h(2097): note: see declaration of 'av_oformat_next'
+CC	libavformat/os_support.o
+os_support.c
+CC	libavformat/pcm.o
+pcm.c
+CC	libavformat/pcmdec.o
+pcmdec.c
+CC	libavformat/pcmenc.o
+pcmenc.c
+CC	libavformat/protocols.o
+protocols.c
+libavformat/protocols.c(101): warning C4090: '=': different 'const' qualifiers
+CC	libavformat/qtpalette.o
+qtpalette.c
+CC	libavformat/rawdec.o
+rawdec.c
+CC	libavformat/rawenc.o
+rawenc.c
+CC	libavformat/rawutils.o
+rawutils.c
+CC	libavformat/replaygain.o
+replaygain.c
+CC	libavformat/riff.o
+riff.c
+CC	libavformat/riffdec.o
+riffdec.c
+CC	libavformat/riffenc.o
+riffenc.c
+libavformat/riffenc.c(301): warning C4267: 'function': conversion from 'size_t' to 'unsigned int', possible loss of data
+CC	libavformat/sdp.o
+sdp.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavformat/url.o
+url.c
+libavformat/url.c(77): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+CC	libavformat/utils.o
+utils.c
+libavformat/utils.c(225): warning C4996: 'av_codec_next': was declared deprecated
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\avcodec.h(4197): note: see declaration of 'av_codec_next'
+libavformat/utils.c(4768): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+libavformat/utils.c(5530): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+libavformat/utils.c(5549): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+CC	libavformat/vorbiscomment.o
+vorbiscomment.c
+libavformat/vorbiscomment.c(70): warning C4267: 'function': conversion from 'size_t' to 'const unsigned int', possible loss of data
+libavformat/vorbiscomment.c(71): warning C4267: 'function': conversion from 'size_t' to 'unsigned int', possible loss of data
+CC	libavformat/wavdec.o
+wavdec.c
+CC	libavformat/wavenc.o
+wavenc.c
+libavformat/wavenc.c(98): warning C4267: 'function': conversion from 'size_t' to 'int', possible loss of data
+libavformat/wavenc.c(101): warning C4267: 'function': conversion from 'size_t' to 'int', possible loss of data
+AR	libavformat/libavformat.a
+INSTALL	libavformat/libavformat.a
+CC	libavcodec/aac_ac3_parser.o
+aac_ac3_parser.c
+CC	libavcodec/aac_parser.o
+aac_parser.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/aacdec.o
+aacdec.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/aacps_float.o
+aacps_float.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/aacpsdsp_float.o
+aacpsdsp_float.c
+CC	libavcodec/aacsbr.o
+aacsbr.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/aactab.o
+aactab.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/aandcttab.o
+aandcttab.c
+CC	libavcodec/ac3_parser.o
+ac3_parser.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/acelp_filters.o
+acelp_filters.c
+CC	libavcodec/acelp_pitch_delay.o
+acelp_pitch_delay.c
+CC	libavcodec/acelp_vectors.o
+acelp_vectors.c
+CC	libavcodec/adts_header.o
+adts_header.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/adts_parser.o
+adts_parser.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/allcodecs.o
+allcodecs.c
+CC	libavcodec/amrnbdec.o
+amrnbdec.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\amrnbdata.h(85): warning C4267: 'initializing': conversion from 'size_t' to 'const uint8_t', possible loss of data
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\amrnbdata.h(106): warning C4267: 'initializing': conversion from 'size_t' to 'const uint8_t', possible loss of data
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\amrnbdata.h(129): warning C4267: 'initializing': conversion from 'size_t' to 'const uint8_t', possible loss of data
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\amrnbdata.h(152): warning C4267: 'initializing': conversion from 'size_t' to 'const uint8_t', possible loss of data
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\amrnbdata.h(179): warning C4267: 'initializing': conversion from 'size_t' to 'const uint8_t', possible loss of data
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\amrnbdata.h(206): warning C4267: 'initializing': conversion from 'size_t' to 'const uint8_t', possible loss of data
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\amrnbdata.h(237): warning C4267: 'initializing': conversion from 'size_t' to 'const uint8_t', possible loss of data
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\amrnbdata.h(280): warning C4267: 'initializing': conversion from 'size_t' to 'const uint8_t', possible loss of data
+CC	libavcodec/amrwbdec.o
+amrwbdec.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\amrwbdata.h(99): warning C4267: 'initializing': conversion from 'size_t' to 'const uint16_t', possible loss of data
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\amrwbdata.h(125): warning C4267: 'initializing': conversion from 'size_t' to 'const uint16_t', possible loss of data
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\amrwbdata.h(161): warning C4267: 'initializing': conversion from 'size_t' to 'const uint16_t', possible loss of data
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\amrwbdata.h(219): warning C4267: 'initializing': conversion from 'size_t' to 'const uint16_t', possible loss of data
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\amrwbdata.h(277): warning C4267: 'initializing': conversion from 'size_t' to 'const uint16_t', possible loss of data
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\amrwbdata.h(335): warning C4267: 'initializing': conversion from 'size_t' to 'const uint16_t', possible loss of data
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\amrwbdata.h(409): warning C4267: 'initializing': conversion from 'size_t' to 'const uint16_t', possible loss of data
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\amrwbdata.h(491): warning C4267: 'initializing': conversion from 'size_t' to 'const uint16_t', possible loss of data
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\amrwbdata.h(581): warning C4267: 'initializing': conversion from 'size_t' to 'const uint16_t', possible loss of data
+CC	libavcodec/avdct.o
+avdct.c
+CC	libavcodec/avfft.o
+avfft.c
+CC	libavcodec/avpacket.o
+avpacket.c
+libavcodec/avpacket.c(131): warning C4267: 'function': conversion from 'size_t' to 'int', possible loss of data
+libavcodec/avpacket.c(307): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+libavcodec/avpacket.c(321): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+libavcodec/avpacket.c(513): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+CC	libavcodec/avpicture.o
+avpicture.c
+CC	libavcodec/bitstream.o
+bitstream.c
+libavcodec/bitstream.c(125): warning C4334: '<<': result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+CC	libavcodec/bitstream_filter.o
+bitstream_filter.c
+CC	libavcodec/bitstream_filters.o
+bitstream_filters.c
+CC	libavcodec/blockdsp.o
+blockdsp.c
+CC	libavcodec/bsf.o
+bsf.c
+CC	libavcodec/cabac.o
+cabac.c
+CC	libavcodec/cbrt_data.o
+cbrt_data.c
+CC	libavcodec/celp_filters.o
+celp_filters.c
+CC	libavcodec/celp_math.o
+celp_math.c
+CC	libavcodec/codec_desc.o
+codec_desc.c
+CC	libavcodec/d3d11va.o
+d3d11va.c
+CC	libavcodec/dct.o
+dct.c
+CC	libavcodec/dct32_fixed.o
+dct32_fixed.c
+CC	libavcodec/dct32_float.o
+dct32_float.c
+CC	libavcodec/decode.o
+decode.c
+libavcodec/decode.c(889): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+CC	libavcodec/dirac.o
+dirac.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/dsd.o
+dsd.c
+CC	libavcodec/dv_profile.o
+dv_profile.c
+CC	libavcodec/dxva2.o
+dxva2.c
+CC	libavcodec/dxva2_h264.o
+dxva2_h264.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/encode.o
+encode.c
+libavcodec/encode.c(371): warning C4996: 'avcodec_encode_video2': was declared deprecated
+libavcodec/encode.c(264): note: see declaration of 'avcodec_encode_video2'
+libavcodec/encode.c(374): warning C4996: 'avcodec_encode_audio2': was declared deprecated
+libavcodec/encode.c(118): note: see declaration of 'avcodec_encode_audio2'
+CC	libavcodec/error_resilience.o
+error_resilience.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+libavcodec/error_resilience.c(956): warning C4267: 'function': conversion from 'size_t' to 'int', possible loss of data
+CC	libavcodec/exif.o
+exif.c
+libavcodec/exif.c(84): warning C4133: 'function': incompatible types - from 'TiffTypes *' to 'unsigned int *'
+CC	libavcodec/faandct.o
+faandct.c
+CC	libavcodec/faanidct.o
+faanidct.c
+CC	libavcodec/fdctdsp.o
+fdctdsp.c
+CC	libavcodec/fft_fixed.o
+fft_fixed.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\fft_template.c(292): warning C4003: not enough arguments for function-like macro invocation 'SPLIT_RADIX_PERMUTATION'
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\fft_template.c(292): warning C4003: not enough arguments for function-like macro invocation 'PROCESS_FFT_PERM_SWAP_LSBS'
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\fft_template.c(292): warning C4003: not enough arguments for function-like macro invocation 'PROCESS_FFT_PERM_DEFAULT'
+CC	libavcodec/fft_fixed_32.o
+fft_fixed_32.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\fft_template.c(292): warning C4003: not enough arguments for function-like macro invocation 'SPLIT_RADIX_PERMUTATION'
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\fft_template.c(292): warning C4003: not enough arguments for function-like macro invocation 'PROCESS_FFT_PERM_SWAP_LSBS'
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\fft_template.c(292): warning C4003: not enough arguments for function-like macro invocation 'PROCESS_FFT_PERM_DEFAULT'
+CC	libavcodec/fft_float.o
+fft_float.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\fft_template.c(292): warning C4003: not enough arguments for function-like macro invocation 'SPLIT_RADIX_PERMUTATION'
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\fft_template.c(292): warning C4003: not enough arguments for function-like macro invocation 'PROCESS_FFT_PERM_SWAP_LSBS'
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\fft_template.c(292): warning C4003: not enough arguments for function-like macro invocation 'PROCESS_FFT_PERM_DEFAULT'
+CC	libavcodec/fft_init_table.o
+fft_init_table.c
+CC	libavcodec/ffv1.o
+ffv1.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/ffv1enc.o
+ffv1enc.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/file_open.o
+file_open.c
+CC	libavcodec/flvdec.o
+flvdec.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/flvenc.o
+flvenc.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/frame_thread_encoder.o
+frame_thread_encoder.c
+libavcodec/frame_thread_encoder.c(89): warning C4996: 'avcodec_encode_video2': was declared deprecated
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\avcodec.h(5542): note: see declaration of 'avcodec_encode_video2'
+CC	libavcodec/golomb.o
+golomb.c
+CC	libavcodec/h263.o
+h263.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/h263_parser.o
+h263_parser.c
+CC	libavcodec/h263data.o
+h263data.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/h263dec.o
+h263dec.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/h263dsp.o
+h263dsp.c
+CC	libavcodec/h2645_parse.o
+h2645_parse.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/h264_cabac.o
+h264_cabac.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/h264_cavlc.o
+h264_cavlc.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/h264_direct.o
+h264_direct.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/h264_loopfilter.o
+h264_loopfilter.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/h264_mb.o
+h264_mb.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+libavcodec/h264_mb.c(563): warning C4334: '<<': result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+libavcodec/h264_mb.c(575): warning C4334: '<<': result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+libavcodec/h264_mb.c(577): warning C4334: '<<': result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+CC	libavcodec/h264_parse.o
+h264_parse.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/h264_parser.o
+h264_parser.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/h264_picture.o
+h264_picture.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/h264_ps.o
+h264_ps.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/h264_refs.o
+h264_refs.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/h264_sei.o
+h264_sei.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/h264_slice.o
+h264_slice.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/h264chroma.o
+h264chroma.c
+CC	libavcodec/h264data.o
+h264data.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/h264dec.o
+h264dec.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/h264dsp.o
+h264dsp.c
+CC	libavcodec/h264idct.o
+h264idct.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/h264pred.o
+h264pred.c
+libavcodec/h264pred.c(414): warning C4028: formal parameter 4 different from declaration
+CC	libavcodec/h264qpel.o
+h264qpel.c
+CC	libavcodec/hpeldsp.o
+hpeldsp.c
+CC	libavcodec/idctdsp.o
+idctdsp.c
+CC	libavcodec/imgconvert.o
+imgconvert.c
+CC	libavcodec/intelh263dec.o
+intelh263dec.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/ituh263dec.o
+ituh263dec.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/ituh263enc.o
+ituh263enc.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/jfdctfst.o
+jfdctfst.c
+CC	libavcodec/jfdctint.o
+jfdctint.c
+CC	libavcodec/jni.o
+jni.c
+CC	libavcodec/jpegtables.o
+jpegtables.c
+CC	libavcodec/jrevdct.o
+jrevdct.c
+CC	libavcodec/kbdwin.o
+kbdwin.c
+CC	libavcodec/latm_parser.o
+latm_parser.c
+CC	libavcodec/lsp.o
+lsp.c
+CC	libavcodec/mathtables.o
+mathtables.c
+CC	libavcodec/mdct15.o
+mdct15.c
+CC	libavcodec/mdct_fixed.o
+mdct_fixed.c
+CC	libavcodec/mdct_fixed_32.o
+mdct_fixed_32.c
+CC	libavcodec/mdct_float.o
+mdct_float.c
+CC	libavcodec/me_cmp.o
+me_cmp.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/mediacodec.o
+mediacodec.c
+CC	libavcodec/mjpeg_parser.o
+mjpeg_parser.c
+CC	libavcodec/mjpegbdec.o
+mjpegbdec.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/mjpegdec.o
+mjpegdec.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+libavcodec/mjpegdec.c(765): warning C4267: 'function': conversion from 'size_t' to 'uint32_t', possible loss of data
+libavcodec/mjpegdec.c(1733): warning C4267: 'function': conversion from 'size_t' to 'uint32_t', possible loss of data
+libavcodec/mjpegdec.c(2519): warning C4996: 'av_frame_set_qp_table': was declared deprecated
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavutil/frame.h(722): note: see declaration of 'av_frame_set_qp_table'
+CC	libavcodec/mjpegenc_huffman.o
+mjpegenc_huffman.c
+CC	libavcodec/motion_est.o
+motion_est.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/mpeg12.o
+mpeg12.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/mpeg12data.o
+mpeg12data.c
+CC	libavcodec/mpeg12dec.o
+mpeg12dec.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/mpeg12framerate.o
+mpeg12framerate.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/mpeg4audio.o
+mpeg4audio.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/mpeg4video.o
+mpeg4video.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/mpeg4video_parser.o
+mpeg4video_parser.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/mpeg4videodec.o
+mpeg4videodec.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+libavcodec/mpeg4videodec.c(298): warning C4334: '<<': result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+libavcodec/mpeg4videodec.c(302): warning C4334: '<<': result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+libavcodec/mpeg4videodec.c(303): warning C4334: '<<': result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+libavcodec/mpeg4videodec.c(307): warning C4334: '<<': result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+libavcodec/mpeg4videodec.c(312): warning C4334: '<<': result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+libavcodec/mpeg4videodec.c(317): warning C4334: '<<': result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+libavcodec/mpeg4videodec.c(330): warning C4334: '<<': result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+libavcodec/mpeg4videodec.c(334): warning C4334: '<<': result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+libavcodec/mpeg4videodec.c(388): warning C4334: '<<': result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+libavcodec/mpeg4videodec.c(389): warning C4334: '<<': result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+libavcodec/mpeg4videodec.c(390): warning C4334: '<<': result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+libavcodec/mpeg4videodec.c(391): warning C4334: '<<': result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+CC	libavcodec/mpeg4videoenc.o
+mpeg4videoenc.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/mpeg_er.o
+mpeg_er.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/mpegaudio.o
+mpegaudio.c
+CC	libavcodec/mpegaudio_parser.o
+mpegaudio_parser.c
+CC	libavcodec/mpegaudiodata.o
+mpegaudiodata.c
+CC	libavcodec/mpegaudiodec_fixed.o
+mpegaudiodec_fixed.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/mpegaudiodecheader.o
+mpegaudiodecheader.c
+CC	libavcodec/mpegaudiodsp.o
+mpegaudiodsp.c
+CC	libavcodec/mpegaudiodsp_data.o
+mpegaudiodsp_data.c
+CC	libavcodec/mpegaudiodsp_fixed.o
+mpegaudiodsp_fixed.c
+CC	libavcodec/mpegaudiodsp_float.o
+mpegaudiodsp_float.c
+CC	libavcodec/mpegpicture.o
+mpegpicture.c
+CC	libavcodec/mpegutils.o
+mpegutils.c
+CC	libavcodec/mpegvideo.o
+mpegvideo.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+libavcodec/mpegvideo.c(1451): warning C4996: 'av_frame_set_qp_table': was declared deprecated
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavutil/frame.h(722): note: see declaration of 'av_frame_set_qp_table'
+CC	libavcodec/mpegvideo_enc.o
+mpegvideo_enc.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/mpegvideo_motion.o
+mpegvideo_motion.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/mpegvideo_parser.o
+mpegvideo_parser.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/mpegvideodata.o
+mpegvideodata.c
+CC	libavcodec/mpegvideodsp.o
+mpegvideodsp.c
+CC	libavcodec/mpegvideoencdsp.o
+mpegvideoencdsp.c
+CC	libavcodec/null_bsf.o
+null_bsf.c
+CC	libavcodec/options.o
+options.c
+libavcodec/options.c(61): warning C4996: 'av_codec_next': was declared deprecated
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\avcodec.h(4197): note: see declaration of 'av_codec_next'
+libavcodec/options.c(66): warning C4996: 'av_codec_next': was declared deprecated
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\avcodec.h(4197): note: see declaration of 'av_codec_next'
+CC	libavcodec/parser.o
+parser.c
+CC	libavcodec/parsers.o
+parsers.c
+CC	libavcodec/pcm.o
+pcm.c
+CC	libavcodec/pixblockdsp.o
+pixblockdsp.c
+CC	libavcodec/profiles.o
+profiles.c
+CC	libavcodec/pthread.o
+pthread.c
+CC	libavcodec/pthread_frame.o
+pthread_frame.c
+CC	libavcodec/pthread_slice.o
+pthread_slice.c
+CC	libavcodec/qpeldsp.o
+qpeldsp.c
+CC	libavcodec/qsv_api.o
+qsv_api.c
+CC	libavcodec/rangecoder.o
+rangecoder.c
+CC	libavcodec/ratecontrol.o
+ratecontrol.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/raw.o
+raw.c
+CC	libavcodec/rdft.o
+rdft.c
+CC	libavcodec/rl.o
+rl.c
+CC	libavcodec/sbrdsp.o
+sbrdsp.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/simple_idct.o
+simple_idct.c
+CC	libavcodec/sinewin.o
+sinewin.c
+CC	libavcodec/sinewin_fixed.o
+sinewin_fixed.c
+CC	libavcodec/startcode.o
+startcode.c
+CC	libavcodec/tiff_common.o
+tiff_common.c
+CC	libavcodec/utils.o
+utils.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavutil/mem_internal.h(42): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+libavcodec/utils.c(1354): warning C4267: 'function': conversion from 'size_t' to 'int', possible loss of data
+libavcodec/utils.c(1935): warning C4028: formal parameter 1 different from declaration
+libavcodec/utils.c(1935): warning C4028: formal parameter 3 different from declaration
+libavcodec/utils.c(2005): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+CC	libavcodec/videodsp.o
+videodsp.c
+CC	libavcodec/vorbis_parser.o
+vorbis_parser.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/wavpack.o
+wavpack.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+X86ASM	libavcodec/x86/aacpsdsp.o
+STRIP	libavcodec/x86/aacpsdsp.o
+skipping strip -x libavcodec/x86/aacpsdsp.o
+CC	libavcodec/x86/aacpsdsp_init.o
+aacpsdsp_init.c
+X86ASM	libavcodec/x86/blockdsp.o
+STRIP	libavcodec/x86/blockdsp.o
+skipping strip -x libavcodec/x86/blockdsp.o
+CC	libavcodec/x86/blockdsp_init.o
+blockdsp_init.c
+CC	libavcodec/x86/constants.o
+constants.c
+X86ASM	libavcodec/x86/dct32.o
+STRIP	libavcodec/x86/dct32.o
+skipping strip -x libavcodec/x86/dct32.o
+CC	libavcodec/x86/dct_init.o
+dct_init.c
+CC	libavcodec/x86/fdct.o
+fdct.c
+CC	libavcodec/x86/fdctdsp_init.o
+fdctdsp_init.c
+X86ASM	libavcodec/x86/fft.o
+STRIP	libavcodec/x86/fft.o
+skipping strip -x libavcodec/x86/fft.o
+CC	libavcodec/x86/fft_init.o
+fft_init.c
+X86ASM	libavcodec/x86/fpel.o
+STRIP	libavcodec/x86/fpel.o
+skipping strip -x libavcodec/x86/fpel.o
+X86ASM	libavcodec/x86/h263_loopfilter.o
+STRIP	libavcodec/x86/h263_loopfilter.o
+skipping strip -x libavcodec/x86/h263_loopfilter.o
+CC	libavcodec/x86/h263dsp_init.o
+h263dsp_init.c
+X86ASM	libavcodec/x86/h264_chromamc.o
+STRIP	libavcodec/x86/h264_chromamc.o
+skipping strip -x libavcodec/x86/h264_chromamc.o
+X86ASM	libavcodec/x86/h264_chromamc_10bit.o
+STRIP	libavcodec/x86/h264_chromamc_10bit.o
+skipping strip -x libavcodec/x86/h264_chromamc_10bit.o
+X86ASM	libavcodec/x86/h264_deblock.o
+STRIP	libavcodec/x86/h264_deblock.o
+skipping strip -x libavcodec/x86/h264_deblock.o
+X86ASM	libavcodec/x86/h264_deblock_10bit.o
+STRIP	libavcodec/x86/h264_deblock_10bit.o
+skipping strip -x libavcodec/x86/h264_deblock_10bit.o
+X86ASM	libavcodec/x86/h264_idct.o
+STRIP	libavcodec/x86/h264_idct.o
+skipping strip -x libavcodec/x86/h264_idct.o
+X86ASM	libavcodec/x86/h264_idct_10bit.o
+STRIP	libavcodec/x86/h264_idct_10bit.o
+skipping strip -x libavcodec/x86/h264_idct_10bit.o
+X86ASM	libavcodec/x86/h264_intrapred.o
+STRIP	libavcodec/x86/h264_intrapred.o
+skipping strip -x libavcodec/x86/h264_intrapred.o
+X86ASM	libavcodec/x86/h264_intrapred_10bit.o
+STRIP	libavcodec/x86/h264_intrapred_10bit.o
+skipping strip -x libavcodec/x86/h264_intrapred_10bit.o
+CC	libavcodec/x86/h264_intrapred_init.o
+h264_intrapred_init.c
+CC	libavcodec/x86/h264_qpel.o
+h264_qpel.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+X86ASM	libavcodec/x86/h264_qpel_10bit.o
+STRIP	libavcodec/x86/h264_qpel_10bit.o
+skipping strip -x libavcodec/x86/h264_qpel_10bit.o
+X86ASM	libavcodec/x86/h264_qpel_8bit.o
+STRIP	libavcodec/x86/h264_qpel_8bit.o
+skipping strip -x libavcodec/x86/h264_qpel_8bit.o
+X86ASM	libavcodec/x86/h264_weight.o
+STRIP	libavcodec/x86/h264_weight.o
+skipping strip -x libavcodec/x86/h264_weight.o
+X86ASM	libavcodec/x86/h264_weight_10bit.o
+STRIP	libavcodec/x86/h264_weight_10bit.o
+skipping strip -x libavcodec/x86/h264_weight_10bit.o
+CC	libavcodec/x86/h264chroma_init.o
+h264chroma_init.c
+CC	libavcodec/x86/h264dsp_init.o
+h264dsp_init.c
+X86ASM	libavcodec/x86/hpeldsp.o
+STRIP	libavcodec/x86/hpeldsp.o
+skipping strip -x libavcodec/x86/hpeldsp.o
+CC	libavcodec/x86/hpeldsp_init.o
+hpeldsp_init.c
+X86ASM	libavcodec/x86/idctdsp.o
+STRIP	libavcodec/x86/idctdsp.o
+skipping strip -x libavcodec/x86/idctdsp.o
+CC	libavcodec/x86/idctdsp_init.o
+idctdsp_init.c
+libavcodec/x86/idctdsp_init.c(67): warning C4028: formal parameter 2 different from declaration
+libavcodec/x86/idctdsp_init.c(68): warning C4028: formal parameter 2 different from declaration
+libavcodec/x86/idctdsp_init.c(69): warning C4028: formal parameter 2 different from declaration
+libavcodec/x86/idctdsp_init.c(84): warning C4028: formal parameter 2 different from declaration
+libavcodec/x86/idctdsp_init.c(85): warning C4028: formal parameter 2 different from declaration
+libavcodec/x86/idctdsp_init.c(86): warning C4028: formal parameter 2 different from declaration
+X86ASM	libavcodec/x86/imdct36.o
+STRIP	libavcodec/x86/imdct36.o
+skipping strip -x libavcodec/x86/imdct36.o
+X86ASM	libavcodec/x86/mdct15.o
+STRIP	libavcodec/x86/mdct15.o
+skipping strip -x libavcodec/x86/mdct15.o
+CC	libavcodec/x86/mdct15_init.o
+mdct15_init.c
+X86ASM	libavcodec/x86/me_cmp.o
+STRIP	libavcodec/x86/me_cmp.o
+skipping strip -x libavcodec/x86/me_cmp.o
+CC	libavcodec/x86/me_cmp_init.o
+me_cmp_init.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/x86/mpegaudiodsp.o
+mpegaudiodsp.c
+CC	libavcodec/x86/mpegvideo.o
+mpegvideo.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+CC	libavcodec/x86/mpegvideodsp.o
+mpegvideodsp.c
+CC	libavcodec/x86/mpegvideoenc.o
+mpegvideoenc.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavcodec\get_bits.h(492): warning C4101: 're_cache': unreferenced local variable
+X86ASM	libavcodec/x86/mpegvideoencdsp.o
+STRIP	libavcodec/x86/mpegvideoencdsp.o
+skipping strip -x libavcodec/x86/mpegvideoencdsp.o
+CC	libavcodec/x86/mpegvideoencdsp_init.o
+mpegvideoencdsp_init.c
+X86ASM	libavcodec/x86/pixblockdsp.o
+STRIP	libavcodec/x86/pixblockdsp.o
+skipping strip -x libavcodec/x86/pixblockdsp.o
+CC	libavcodec/x86/pixblockdsp_init.o
+pixblockdsp_init.c
+libavcodec/x86/pixblockdsp_init.c(41): warning C4028: formal parameter 1 different from declaration
+libavcodec/x86/pixblockdsp_init.c(43): warning C4028: formal parameter 1 different from declaration
+libavcodec/x86/pixblockdsp_init.c(48): warning C4028: formal parameter 1 different from declaration
+libavcodec/x86/pixblockdsp_init.c(50): warning C4028: formal parameter 1 different from declaration
+X86ASM	libavcodec/x86/qpel.o
+STRIP	libavcodec/x86/qpel.o
+skipping strip -x libavcodec/x86/qpel.o
+X86ASM	libavcodec/x86/qpeldsp.o
+STRIP	libavcodec/x86/qpeldsp.o
+skipping strip -x libavcodec/x86/qpeldsp.o
+CC	libavcodec/x86/qpeldsp_init.o
+qpeldsp_init.c
+X86ASM	libavcodec/x86/sbrdsp.o
+STRIP	libavcodec/x86/sbrdsp.o
+skipping strip -x libavcodec/x86/sbrdsp.o
+CC	libavcodec/x86/sbrdsp_init.o
+sbrdsp_init.c
+X86ASM	libavcodec/x86/simple_idct.o
+STRIP	libavcodec/x86/simple_idct.o
+skipping strip -x libavcodec/x86/simple_idct.o
+X86ASM	libavcodec/x86/simple_idct10.o
+STRIP	libavcodec/x86/simple_idct10.o
+skipping strip -x libavcodec/x86/simple_idct10.o
+X86ASM	libavcodec/x86/videodsp.o
+STRIP	libavcodec/x86/videodsp.o
+skipping strip -x libavcodec/x86/videodsp.o
+CC	libavcodec/x86/videodsp_init.o
+videodsp_init.c
+X86ASM	libavcodec/x86/xvididct.o
+STRIP	libavcodec/x86/xvididct.o
+skipping strip -x libavcodec/x86/xvididct.o
+CC	libavcodec/x86/xvididct_init.o
+xvididct_init.c
+CC	libavcodec/xiph.o
+xiph.c
+CC	libavcodec/xvididct.o
+xvididct.c
+AR	libavcodec/libavcodec.a
+INSTALL	libavcodec/libavcodec.a
+CC	libswresample/audioconvert.o
+audioconvert.c
+CC	libswresample/dither.o
+dither.c
+libswresample/dither.c(119): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+CC	libswresample/options.o
+options.c
+CC	libswresample/rematrix.o
+rematrix.c
+CC	libswresample/resample.o
+resample.c
+CC	libswresample/resample_dsp.o
+resample_dsp.c
+CC	libswresample/swresample.o
+swresample.c
+libswresample/swresample.c(718): warning C4101: 'max_output': unreferenced local variable
+CC	libswresample/swresample_frame.o
+swresample_frame.c
+X86ASM	libswresample/x86/audio_convert.o
+STRIP	libswresample/x86/audio_convert.o
+skipping strip -x libswresample/x86/audio_convert.o
+CC	libswresample/x86/audio_convert_init.o
+audio_convert_init.c
+X86ASM	libswresample/x86/rematrix.o
+STRIP	libswresample/x86/rematrix.o
+skipping strip -x libswresample/x86/rematrix.o
+CC	libswresample/x86/rematrix_init.o
+rematrix_init.c
+X86ASM	libswresample/x86/resample.o
+STRIP	libswresample/x86/resample.o
+skipping strip -x libswresample/x86/resample.o
+CC	libswresample/x86/resample_init.o
+resample_init.c
+AR	libswresample/libswresample.a
+INSTALL	libswresample/libswresample.a
+CC	libswscale/alphablend.o
+alphablend.c
+CC	libswscale/gamma.o
+gamma.c
+CC	libswscale/hscale.o
+hscale.c
+CC	libswscale/hscale_fast_bilinear.o
+hscale_fast_bilinear.c
+CC	libswscale/input.o
+input.c
+CC	libswscale/options.o
+options.c
+libswscale/options.c(64): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+libswscale/options.c(65): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+CC	libswscale/output.o
+output.c
+CC	libswscale/rgb2rgb.o
+rgb2rgb.c
+CC	libswscale/slice.o
+slice.c
+CC	libswscale/swscale.o
+swscale.c
+libswscale/swscale.c(808): warning C4090: 'function': different 'const' qualifiers
+CC	libswscale/swscale_unscaled.o
+swscale_unscaled.c
+CC	libswscale/utils.o
+utils.c
+CC	libswscale/vscale.o
+vscale.c
+CC	libswscale/x86/hscale_fast_bilinear_simd.o
+hscale_fast_bilinear_simd.c
+X86ASM	libswscale/x86/input.o
+STRIP	libswscale/x86/input.o
+skipping strip -x libswscale/x86/input.o
+X86ASM	libswscale/x86/output.o
+STRIP	libswscale/x86/output.o
+skipping strip -x libswscale/x86/output.o
+CC	libswscale/x86/rgb2rgb.o
+rgb2rgb.c
+X86ASM	libswscale/x86/rgb_2_rgb.o
+STRIP	libswscale/x86/rgb_2_rgb.o
+skipping strip -x libswscale/x86/rgb_2_rgb.o
+X86ASM	libswscale/x86/scale.o
+STRIP	libswscale/x86/scale.o
+skipping strip -x libswscale/x86/scale.o
+CC	libswscale/x86/swscale.o
+swscale.c
+CC	libswscale/x86/yuv2rgb.o
+yuv2rgb.c
+X86ASM	libswscale/x86/yuv_2_rgb.o
+STRIP	libswscale/x86/yuv_2_rgb.o
+skipping strip -x libswscale/x86/yuv_2_rgb.o
+CC	libswscale/yuv2rgb.o
+yuv2rgb.c
+libswscale/yuv2rgb.c(436): warning C4101: 'V': unreferenced local variable
+libswscale/yuv2rgb.c(436): warning C4101: 'U': unreferenced local variable
+libswscale/yuv2rgb.c(436): warning C4101: 'Y': unreferenced local variable
+libswscale/yuv2rgb.c(466): warning C4101: 'V': unreferenced local variable
+libswscale/yuv2rgb.c(466): warning C4101: 'U': unreferenced local variable
+libswscale/yuv2rgb.c(466): warning C4101: 'Y': unreferenced local variable
+libswscale/yuv2rgb.c(497): warning C4101: 'V': unreferenced local variable
+libswscale/yuv2rgb.c(497): warning C4101: 'U': unreferenced local variable
+libswscale/yuv2rgb.c(497): warning C4101: 'Y': unreferenced local variable
+libswscale/yuv2rgb.c(651): warning C4101: 'b': unreferenced local variable
+libswscale/yuv2rgb.c(651): warning C4101: 'r': unreferenced local variable
+libswscale/yuv2rgb.c(651): warning C4101: 'V': unreferenced local variable
+libswscale/yuv2rgb.c(651): warning C4101: 'U': unreferenced local variable
+libswscale/yuv2rgb.c(676): warning C4101: 'V': unreferenced local variable
+libswscale/yuv2rgb.c(676): warning C4101: 'U': unreferenced local variable
+libswscale/yuv2rgb.c(676): warning C4101: 'Y': unreferenced local variable
+AR	libswscale/libswscale.a
+INSTALL	libswscale/libswscale.a
+CC	libavutil/adler32.o
+adler32.c
+CC	libavutil/aes.o
+aes.c
+CC	libavutil/aes_ctr.o
+aes_ctr.c
+CC	libavutil/audio_fifo.o
+audio_fifo.c
+CC	libavutil/avsscanf.o
+avsscanf.c
+CC	libavutil/avstring.o
+avstring.c
+libavutil/avstring.c(246): warning C4267: 'function': conversion from 'size_t' to 'unsigned int', possible loss of data
+libavutil/avstring.c(248): warning C4267: 'function': conversion from 'size_t' to 'unsigned int', possible loss of data
+libavutil/avstring.c(358): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+CC	libavutil/base64.o
+base64.c
+CC	libavutil/blowfish.o
+blowfish.c
+CC	libavutil/bprint.o
+bprint.c
+libavutil/bprint.c(190): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+libavutil/bprint.c(215): warning C4267: 'function': conversion from 'size_t' to 'unsigned int', possible loss of data
+CC	libavutil/buffer.o
+buffer.c
+CC	libavutil/camellia.o
+camellia.c
+CC	libavutil/cast5.o
+cast5.c
+CC	libavutil/channel_layout.o
+channel_layout.c
+CC	libavutil/color_utils.o
+color_utils.c
+CC	libavutil/cpu.o
+cpu.c
+libavutil/cpu.c(185): warning C4090: 'function': different 'const' qualifiers
+libavutil/cpu.c(264): warning C4090: 'function': different 'const' qualifiers
+CC	libavutil/crc.o
+crc.c
+CC	libavutil/des.o
+des.c
+CC	libavutil/dict.o
+dict.c
+CC	libavutil/display.o
+display.c
+CC	libavutil/downmix_info.o
+downmix_info.c
+CC	libavutil/encryption_info.o
+encryption_info.c
+CC	libavutil/error.o
+error.c
+CC	libavutil/eval.o
+eval.c
+CC	libavutil/fifo.o
+fifo.c
+CC	libavutil/file.o
+file.c
+CC	libavutil/file_open.o
+file_open.c
+CC	libavutil/fixed_dsp.o
+fixed_dsp.c
+libavutil/fixed_dsp.c(160): warning C4028: formal parameter 1 different from declaration
+libavutil/fixed_dsp.c(160): warning C4028: formal parameter 2 different from declaration
+CC	libavutil/float_dsp.o
+float_dsp.c
+CC	libavutil/frame.o
+frame.c
+libavutil/frame.c(768): warning C4090: 'function': different 'const' qualifiers
+libavutil/frame.c(913): warning C4267: '-=': conversion from 'size_t' to 'int', possible loss of data
+libavutil/frame.c(914): warning C4267: '-=': conversion from 'size_t' to 'int', possible loss of data
+libavutil/frame.c(925): warning C4267: 'function': conversion from 'size_t' to 'unsigned int', possible loss of data
+libavutil/frame.c(929): warning C4267: 'function': conversion from 'size_t' to 'unsigned int', possible loss of data
+libavutil/frame.c(947): warning C4267: '-=': conversion from 'size_t' to 'int', possible loss of data
+libavutil/frame.c(948): warning C4267: '-=': conversion from 'size_t' to 'int', possible loss of data
+CC	libavutil/hash.o
+hash.c
+CC	libavutil/hdr_dynamic_metadata.o
+hdr_dynamic_metadata.c
+CC	libavutil/hmac.o
+hmac.c
+CC	libavutil/hwcontext.o
+hwcontext.c
+CC	libavutil/hwcontext_d3d11va.o
+hwcontext_d3d11va.c
+CC	libavutil/hwcontext_dxva2.o
+hwcontext_dxva2.c
+CC	libavutil/imgutils.o
+imgutils.c
+libavutil/imgutils.c(526): warning C4267: 'function': conversion from 'size_t' to 'int', possible loss of data
+CC	libavutil/integer.o
+integer.c
+CC	libavutil/intmath.o
+intmath.c
+CC	libavutil/lfg.o
+lfg.c
+CC	libavutil/lls.o
+lls.c
+CC	libavutil/log.o
+log.c
+libavutil/log.c(194): warning C4333: '>>': right shift by too large amount, data loss
+libavutil/log.c(200): warning C4333: '>>': right shift by too large amount, data loss
+libavutil/log.c(201): warning C4333: '>>': right shift by too large amount, data loss
+CC	libavutil/log2_tab.o
+log2_tab.c
+CC	libavutil/mastering_display_metadata.o
+mastering_display_metadata.c
+CC	libavutil/mathematics.o
+mathematics.c
+CC	libavutil/md5.o
+md5.c
+libavutil/md5.c(103): warning C4101: 'i': unreferenced local variable
+CC	libavutil/mem.o
+mem.c
+E:\dev\projects\eka2l1\src\external\ffmpeg\libavutil\mem_internal.h(42): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+libavutil/mem.c(495): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+CC	libavutil/murmur3.o
+murmur3.c
+CC	libavutil/opt.o
+opt.c
+libavutil/opt.c(189): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+libavutil/opt.c(435): warning C4133: 'function': incompatible types - from 'AVPixelFormat (__cdecl *)(const char *)' to 'int (__cdecl *)(const char *)'
+libavutil/opt.c(441): warning C4133: 'function': incompatible types - from 'AVSampleFormat (__cdecl *)(const char *)' to 'int (__cdecl *)(const char *)'
+libavutil/opt.c(862): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+libavutil/opt.c(1003): warning C4133: 'function': incompatible types - from 'AVPixelFormat *' to 'int *'
+libavutil/opt.c(1008): warning C4133: 'function': incompatible types - from 'AVSampleFormat *' to 'int *'
+libavutil/opt.c(1681): warning C4090: 'function': different 'const' qualifiers
+libavutil/opt.c(1724): warning C4090: 'function': different 'const' qualifiers
+libavutil/opt.c(1926): warning C4090: 'function': different 'const' qualifiers
+CC	libavutil/parseutils.o
+parseutils.c
+libavutil/parseutils.c(367): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+libavutil/parseutils.c(372): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+libavutil/parseutils.c(479): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+CC	libavutil/pixdesc.o
+pixdesc.c
+libavutil/pixdesc.c(2654): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+CC	libavutil/pixelutils.o
+pixelutils.c
+CC	libavutil/random_seed.o
+random_seed.c
+CC	libavutil/rational.o
+rational.c
+CC	libavutil/rc4.o
+rc4.c
+CC	libavutil/reverse.o
+reverse.c
+CC	libavutil/ripemd.o
+ripemd.c
+libavutil/ripemd.c(136): warning C4101: 't': unreferenced local variable
+libavutil/ripemd.c(193): warning C4101: 't': unreferenced local variable
+libavutil/ripemd.c(318): warning C4101: 't': unreferenced local variable
+libavutil/ripemd.c(390): warning C4101: 't': unreferenced local variable
+CC	libavutil/samplefmt.o
+samplefmt.c
+CC	libavutil/sha.o
+sha.c
+CC	libavutil/sha512.o
+sha512.c
+CC	libavutil/slicethread.o
+slicethread.c
+CC	libavutil/spherical.o
+spherical.c
+CC	libavutil/stereo3d.o
+stereo3d.c
+CC	libavutil/tea.o
+tea.c
+CC	libavutil/threadmessage.o
+threadmessage.c
+CC	libavutil/time.o
+time.c
+CC	libavutil/timecode.o
+timecode.c
+CC	libavutil/tree.o
+tree.c
+CC	libavutil/twofish.o
+twofish.c
+CC	libavutil/tx.o
+tx.c
+CC	libavutil/tx_double.o
+tx_double.c
+CC	libavutil/tx_float.o
+tx_float.c
+CC	libavutil/tx_int32.o
+tx_int32.c
+CC	libavutil/utils.o
+utils.c
+CC	libavutil/x86/cpu.o
+cpu.c
+X86ASM	libavutil/x86/cpuid.o
+STRIP	libavutil/x86/cpuid.o
+skipping strip -x libavutil/x86/cpuid.o
+X86ASM	libavutil/x86/emms.o
+STRIP	libavutil/x86/emms.o
+skipping strip -x libavutil/x86/emms.o
+X86ASM	libavutil/x86/fixed_dsp.o
+STRIP	libavutil/x86/fixed_dsp.o
+skipping strip -x libavutil/x86/fixed_dsp.o
+CC	libavutil/x86/fixed_dsp_init.o
+fixed_dsp_init.c
+libavutil/x86/fixed_dsp_init.c(33): warning C4028: formal parameter 1 different from declaration
+libavutil/x86/fixed_dsp_init.c(33): warning C4028: formal parameter 2 different from declaration
+X86ASM	libavutil/x86/float_dsp.o
+STRIP	libavutil/x86/float_dsp.o
+skipping strip -x libavutil/x86/float_dsp.o
+CC	libavutil/x86/float_dsp_init.o
+float_dsp_init.c
+X86ASM	libavutil/x86/imgutils.o
+STRIP	libavutil/x86/imgutils.o
+skipping strip -x libavutil/x86/imgutils.o
+CC	libavutil/x86/imgutils_init.o
+imgutils_init.c
+X86ASM	libavutil/x86/lls.o
+STRIP	libavutil/x86/lls.o
+skipping strip -x libavutil/x86/lls.o
+CC	libavutil/x86/lls_init.o
+lls_init.c
+CC	libavutil/xga_font_data.o
+xga_font_data.c
+CC	libavutil/xtea.o
+xtea.c
+libavutil/xtea.c(140): warning C4307: '+': integral constant overflow
+libavutil/xtea.c(142): warning C4307: '+': integral constant overflow
+libavutil/xtea.c(143): warning C4307: '+': integral constant overflow
+libavutil/xtea.c(145): warning C4307: '+': integral constant overflow
+libavutil/xtea.c(147): warning C4307: '+': integral constant overflow
+libavutil/xtea.c(148): warning C4307: '+': integral constant overflow
+libavutil/xtea.c(150): warning C4307: '+': integral constant overflow
+libavutil/xtea.c(151): warning C4307: '+': integral constant overflow
+libavutil/xtea.c(153): warning C4307: '+': integral constant overflow
+libavutil/xtea.c(155): warning C4307: '+': integral constant overflow
+libavutil/xtea.c(156): warning C4307: '+': integral constant overflow
+libavutil/xtea.c(158): warning C4307: '+': integral constant overflow
+libavutil/xtea.c(160): warning C4307: '+': integral constant overflow
+libavutil/xtea.c(161): warning C4307: '+': integral constant overflow
+libavutil/xtea.c(163): warning C4307: '+': integral constant overflow
+libavutil/xtea.c(164): warning C4307: '+': integral constant overflow
+libavutil/xtea.c(166): warning C4307: '+': integral constant overflow
+libavutil/xtea.c(168): warning C4307: '+': integral constant overflow
+libavutil/xtea.c(169): warning C4307: '+': integral constant overflow
+AR	libavutil/libavutil.a
+INSTALL	libavutil/libavutil.a
+INSTALL	libavformat/avformat.h
+INSTALL	libavformat/avio.h
+INSTALL	libavformat/version.h
+GEN	libavformat/libavformat.pc
+INSTALL	libavformat/libavformat.pc
+INSTALL	libavcodec/ac3_parser.h
+INSTALL	libavcodec/adts_parser.h
+INSTALL	libavcodec/avcodec.h
+INSTALL	libavcodec/avdct.h
+INSTALL	libavcodec/avfft.h
+INSTALL	libavcodec/d3d11va.h
+INSTALL	libavcodec/dirac.h
+INSTALL	libavcodec/dv_profile.h
+INSTALL	libavcodec/dxva2.h
+INSTALL	libavcodec/jni.h
+INSTALL	libavcodec/mediacodec.h
+INSTALL	libavcodec/qsv.h
+INSTALL	libavcodec/vaapi.h
+INSTALL	libavcodec/vdpau.h
+INSTALL	libavcodec/version.h
+INSTALL	libavcodec/videotoolbox.h
+INSTALL	libavcodec/vorbis_parser.h
+INSTALL	libavcodec/xvmc.h
+GEN	libavcodec/libavcodec.pc
+INSTALL	libavcodec/libavcodec.pc
+INSTALL	libswresample/swresample.h
+INSTALL	libswresample/version.h
+GEN	libswresample/libswresample.pc
+INSTALL	libswresample/libswresample.pc
+INSTALL	libswscale/swscale.h
+INSTALL	libswscale/version.h
+GEN	libswscale/libswscale.pc
+INSTALL	libswscale/libswscale.pc
+INSTALL	libavutil/adler32.h
+INSTALL	libavutil/aes.h
+INSTALL	libavutil/aes_ctr.h
+INSTALL	libavutil/attributes.h
+INSTALL	libavutil/audio_fifo.h
+INSTALL	libavutil/avassert.h
+INSTALL	libavutil/avstring.h
+INSTALL	libavutil/avutil.h
+INSTALL	libavutil/base64.h
+INSTALL	libavutil/blowfish.h
+INSTALL	libavutil/bprint.h
+INSTALL	libavutil/bswap.h
+INSTALL	libavutil/buffer.h
+INSTALL	libavutil/cast5.h
+INSTALL	libavutil/camellia.h
+INSTALL	libavutil/channel_layout.h
+INSTALL	libavutil/common.h
+INSTALL	libavutil/cpu.h
+INSTALL	libavutil/crc.h
+INSTALL	libavutil/des.h
+INSTALL	libavutil/dict.h
+INSTALL	libavutil/display.h
+INSTALL	libavutil/downmix_info.h
+INSTALL	libavutil/encryption_info.h
+INSTALL	libavutil/error.h
+INSTALL	libavutil/eval.h
+INSTALL	libavutil/fifo.h
+INSTALL	libavutil/file.h
+INSTALL	libavutil/frame.h
+INSTALL	libavutil/hash.h
+INSTALL	libavutil/hdr_dynamic_metadata.h
+INSTALL	libavutil/hmac.h
+INSTALL	libavutil/hwcontext.h
+INSTALL	libavutil/hwcontext_cuda.h
+INSTALL	libavutil/hwcontext_d3d11va.h
+INSTALL	libavutil/hwcontext_drm.h
+INSTALL	libavutil/hwcontext_dxva2.h
+INSTALL	libavutil/hwcontext_qsv.h
+INSTALL	libavutil/hwcontext_mediacodec.h
+INSTALL	libavutil/hwcontext_opencl.h
+INSTALL	libavutil/hwcontext_vaapi.h
+INSTALL	libavutil/hwcontext_videotoolbox.h
+INSTALL	libavutil/hwcontext_vdpau.h
+INSTALL	libavutil/hwcontext_vulkan.h
+INSTALL	libavutil/imgutils.h
+INSTALL	libavutil/intfloat.h
+INSTALL	libavutil/intreadwrite.h
+INSTALL	libavutil/lfg.h
+INSTALL	libavutil/log.h
+INSTALL	libavutil/macros.h
+INSTALL	libavutil/mathematics.h
+INSTALL	libavutil/mastering_display_metadata.h
+INSTALL	libavutil/md5.h
+INSTALL	libavutil/mem.h
+INSTALL	libavutil/motion_vector.h
+INSTALL	libavutil/murmur3.h
+INSTALL	libavutil/opt.h
+INSTALL	libavutil/parseutils.h
+INSTALL	libavutil/pixdesc.h
+INSTALL	libavutil/pixelutils.h
+INSTALL	libavutil/pixfmt.h
+INSTALL	libavutil/random_seed.h
+INSTALL	libavutil/rc4.h
+INSTALL	libavutil/rational.h
+INSTALL	libavutil/replaygain.h
+INSTALL	libavutil/ripemd.h
+INSTALL	libavutil/samplefmt.h
+INSTALL	libavutil/sha.h
+INSTALL	libavutil/sha512.h
+INSTALL	libavutil/spherical.h
+INSTALL	libavutil/stereo3d.h
+INSTALL	libavutil/threadmessage.h
+INSTALL	libavutil/time.h
+INSTALL	libavutil/timecode.h
+INSTALL	libavutil/timestamp.h
+INSTALL	libavutil/tree.h
+INSTALL	libavutil/twofish.h
+INSTALL	libavutil/version.h
+INSTALL	libavutil/xtea.h
+INSTALL	libavutil/tea.h
+INSTALL	libavutil/tx.h
+INSTALL	libavutil/avconfig.h
+INSTALL	libavutil/ffversion.h
+GEN	libavutil/libavutil.pc
+INSTALL	libavutil/libavutil.pc

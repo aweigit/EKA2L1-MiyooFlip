@@ -1,0 +1,109 @@
+/*
+ * Copyright (c) 2019 EKA2L1 Team
+ * 
+ * This file is part of EKA2L1 project
+ * (see bentokun.github.com/EKA2L1).
+ * 
+ * Initial contributor: pent0
+ * Contributors:
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#pragma once
+
+#include <common/vecx.h>
+
+#include <drivers/graphics/common.h>
+#include <drivers/itc.h>
+#include <services/fbs/bitmap.h>
+
+#include <array>
+
+namespace eka2l1 {
+    class kernel_system;
+    class fbs_server;
+}
+
+namespace eka2l1::epoc {
+    constexpr std::uint32_t MAX_CACHE_SIZE = 1024;
+    struct gdi_store_command;
+
+    class bitmap_cache {
+    public:
+        using driver_texture_handle_array = std::array<drivers::handle, MAX_CACHE_SIZE>;
+        using bitmap_array = std::array<epoc::bitwise_bitmap *, MAX_CACHE_SIZE>;
+        using timestamps_array = std::array<std::uint64_t, MAX_CACHE_SIZE>;
+        using hashes_array = timestamps_array;
+        using sizes_array = std::array<std::pair<std::uint64_t, std::uint32_t>, MAX_CACHE_SIZE>;
+
+    private:
+        driver_texture_handle_array driver_textures;
+        bitmap_array bitmaps;
+        timestamps_array timestamps;
+        hashes_array hashes;
+        sizes_array bitmap_sizes;
+
+        fbs_server *fbss_;
+
+        kernel_system *kern;
+        drivers::graphics_driver *driver;
+
+        std::int64_t last_free{ 0 };
+
+    protected:
+        std::uint64_t hash_bitwise_bitmap(epoc::bitwise_bitmap *bw_bmp);
+
+    public:
+        explicit bitmap_cache(kernel_system *kern_);
+
+        const driver_texture_handle_array &texture_array() {
+            return driver_textures;
+        }
+
+        const bitmap_array &bitwise_bitmap_array() {
+            return bitmaps;
+        }
+
+        std::int64_t get_suitable_bitmap_index();
+
+        /**
+         * @brief   Add a bitmap to texture cache if not available in the cache, and get
+         *          the driver's texture handle.
+         * 
+         * If the cache is full, this will find the least used bitmap (by sorting out 
+         * last used timestamp). Also, since bitwise bitmap modify itself by user's will
+         * without a method to notify the user, this also hashes bitmap data (using xxHash),
+         * and will reupload the bitmap to driver if the texture data is different.
+         * 
+         * @param   driver          Pointer to graphics driver instance.
+         * @param   bmp             The pointer to bitwise bitmap.
+         * @param   builder         Pointer to a command builder, used for updating texture or destroying texture in sequence. NULL if not needed.
+         * @param   update_cmd      Pointer to a store command that will be filled with bitmap updating plus destroying command. NULL if not needed.
+         *
+         * @returns Handle to driver's texture associated with this bitmap.
+         */
+        drivers::handle add_or_get(drivers::graphics_driver *driver, epoc::bitwise_bitmap *bmp,
+            drivers::graphics_command_builder *builder = nullptr, gdi_store_command *update_cmd = nullptr);
+
+        /**
+         * \brief   Remove the bitmap from cache.
+         * \returns True if success. False if bitmap not found. Likely that the bitmap has been
+         *          purged from cache
+         */
+        bool remove(epoc::bitwise_bitmap *bmp);
+
+        void clean(drivers::graphics_driver *drv);
+    };
+}

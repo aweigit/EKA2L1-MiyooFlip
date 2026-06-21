@@ -1,0 +1,1159 @@
+/*
+ * Copyright (c) 2019 EKA2L1 Team.
+ *
+ * This file is part of EKA2L1 project
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#include <launcher.h>
+#include <state.h>
+
+#include <package/manager.h>
+#include <system/devices.h>
+
+#include <common/fileutils.h>
+#include <common/language.h>
+#include <common/path.h>
+#include <common/pystr.h>
+#include <common/fileutils.h>
+#include <loader/mif.h>
+#include <loader/svgb.h>
+#include <loader/nvg.h>
+#include <services/fbs/fbs.h>
+#include <system/installation/firmware.h>
+#include <system/installation/rpkg.h>
+#include <utils/locale.h>
+#include <utils/system.h>
+
+#include <lunasvg.h>
+
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb/stb_image.h>
+
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <stb/stb_image_write.h>
+#include <filesystem>
+
+#include<iostream>
+#include<unistd.h>
+
+extern void cleanup();
+
+namespace eka2l1::sdl2 {
+
+    launcher::launcher(eka2l1::system *sys)
+        : sys(sys)
+        , conf(sys->get_config())
+        , kern(sys->get_kernel_system())
+        , alserv(nullptr)
+        , input_complete_callback_(nullptr)
+        , yes_no_complete_callback_(nullptr)
+        , is_s80(false)
+        , background_img_(0)
+        , background_img_opacity_(0.0f)
+        , keep_bg_aspect_(true) {
+        retrieve_servers();
+    }
+
+    void launcher::retrieve_servers() {
+        if (kern) {
+            alserv = reinterpret_cast<eka2l1::applist_server *>(kern->get_by_name<service::server>(get_app_list_server_name_by_epocver(
+                    kern->get_epoc_version())));
+            winserv = reinterpret_cast<eka2l1::window_server *>(kern->get_by_name<service::server>(get_winserv_name_by_epocver(
+                    kern->get_epoc_version())));
+            fbsserv = reinterpret_cast<eka2l1::fbs_server *>(kern->get_by_name<service::server>(epoc::get_fbs_server_name_by_epocver(
+                    kern->get_epoc_version())));
+            rightsserv = reinterpret_cast<eka2l1::rights_server *>(kern->get_by_name<service::server>(eka2l1::RIGHTS_SERVER_NAME));
+        }
+    }
+
+    static constexpr std::uint32_t WARE_APP_UID_START = 0x10300000;
+    static inline bool is_reg_entry_probably_system_app(const apa_app_registry &reg) {
+        return ((reg.land_drive == drive_z) && (reg.mandatory_info.uid < WARE_APP_UID_START));
+    }
+
+    std::vector<std::string> launcher::get_apps() {
+        std::vector<apa_app_registry> &registerations = alserv->get_registerations();
+        std::vector<std::string> info;
+        for (auto &reg : registerations) {
+            if (!reg.caps.is_hidden) {
+                if (!conf || (conf && (!conf->hide_system_apps || (conf->hide_system_apps && !is_reg_entry_probably_system_app(reg))))) {
+                    std::string name = common::ucs2_to_utf8(reg.mandatory_info.long_caption.to_std_string(nullptr));
+                    std::string uid = std::to_string(reg.mandatory_info.uid);
+                    info.push_back(uid);
+                    info.push_back(name);
+                }
+            }
+        }
+        return info;
+    }
+
+    // static jobject make_new_bitmap(JNIEnv *env, std::uint32_t width, std::uint32_t height) {
+    //     jclass bitmapCls = env->FindClass("android/graphics/Bitmap");
+    //     jmethodID createBitmapFunction = env->GetStaticMethodID(bitmapCls,
+    //         "createBitmap", "(IILandroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;");
+    //     jstring configName = env->NewStringUTF("ARGB_8888");
+    //     jclass bitmapConfigClass = env->FindClass("android/graphics/Bitmap$Config");
+    //     jmethodID valueOfBitmapConfigFunction = env->GetStaticMethodID(
+    //         bitmapConfigClass, "valueOf", "(Ljava/lang/String;)Landroid/graphics/Bitmap$Config;");
+
+    //     jobject bitmapConfig = env->CallStaticObjectMethod(bitmapConfigClass, valueOfBitmapConfigFunction,
+    //         configName);
+
+    //     jobject newBitmap = env->CallStaticObjectMethod(bitmapCls, createBitmapFunction, width,
+    //         height, bitmapConfig);
+
+    //     return newBitmap;
+    // }
+
+    // jobjectArray launcher::get_app_icon(JNIEnv *env, std::uint32_t uid) {
+    //     apa_app_registry *reg = alserv->get_registration(uid);
+    //     if (!reg) {
+    //         return nullptr;
+    //     }
+
+    //     jobjectArray jicons = env->NewObjectArray(2,
+    //         env->FindClass("android/graphics/Bitmap"),
+    //         nullptr);
+
+    //     std::string app_name = common::ucs2_to_utf8(reg->mandatory_info.long_caption.to_std_string(nullptr));
+    //     io_system *io = sys->get_io_system();
+
+    //     const std::u16string path_ext = eka2l1::common::lowercase_ucs2_string(eka2l1::path_extension(reg->icon_file_path));
+
+    //     if (path_ext == u".mif") {
+    //         eka2l1::symfile file_route = io->open_file(reg->icon_file_path, READ_MODE | BIN_MODE);
+    //         eka2l1::common::create_directories("cache");
+
+    //         if (file_route) {
+    //             const std::uint64_t mif_last_modified = file_route->last_modify_since_0ad();
+    //             const std::string cached_path = fmt::format("cache/debinarized_{}.svg",
+    //                 common::pystr(app_name).strip_reserverd().strip().std_str());
+
+    //             std::unique_ptr<lunasvg::Document> document;
+
+    //             if (eka2l1::common::exists(cached_path)) {
+    //                 if (eka2l1::common::get_last_modifiy_since_ad(eka2l1::common::utf8_to_ucs2(cached_path)) >= mif_last_modified) {
+    //                     document = lunasvg::Document::loadFromFile(cached_path.c_str());
+    //                 }
+    //             }
+                
+    //             eka2l1::ro_file_stream file_route_stream(file_route.get());
+    //             eka2l1::loader::mif_file file_mif_parser(reinterpret_cast<eka2l1::common::ro_stream *>(&file_route_stream));
+
+    //             if (!document && file_mif_parser.do_parse()) {
+    //                 std::vector<std::uint8_t> data;
+    //                 int dest_size = 0;
+    //                 if (file_mif_parser.read_mif_entry(0, nullptr, dest_size)) {
+    //                     if (dest_size != 0) {
+    //                         data.resize(dest_size);
+    //                         file_mif_parser.read_mif_entry(0, data.data(), dest_size);
+
+    //                         eka2l1::common::ro_buf_stream inside_stream(data.data(), data.size());
+    //                         std::unique_ptr<eka2l1::common::wo_std_file_stream> outfile_stream =
+    //                                 std::make_unique<eka2l1::common::wo_std_file_stream>(cached_path, true);
+
+    //                         eka2l1::loader::mif_icon_header header;
+    //                         inside_stream.read(&header, sizeof(eka2l1::loader::mif_icon_header));
+
+    //                         std::vector<eka2l1::loader::svgb_convert_error_description> errors;
+    //                         std::vector<eka2l1::loader::nvg_convert_error_description> errors_nvg;
+
+    //                         if (header.type == eka2l1::loader::mif_icon_type_svg) {
+    //                             if (!eka2l1::loader::convert_svgb_to_svg(inside_stream, *outfile_stream, errors)) {
+    //                                 if (errors[0].reason_ == eka2l1::loader::svgb_convert_error_invalid_file) {
+    //                                     outfile_stream->write(reinterpret_cast<const char *>(data.data()) + sizeof(eka2l1::loader::mif_icon_header), data.size() - sizeof(eka2l1::loader::mif_icon_header));
+    //                                 }
+    //                             }
+
+    //                             outfile_stream.reset();
+    //                             document = lunasvg::Document::loadFromFile(cached_path.c_str());
+    //                         } else {
+    //                             inside_stream = eka2l1::common::ro_buf_stream(data.data() + sizeof(eka2l1::loader::mif_icon_header),
+    //                                                                           data.size() - sizeof(eka2l1::loader::mif_icon_header));
+
+    //                             if (eka2l1::loader::convert_nvg_to_svg(inside_stream, *outfile_stream, errors_nvg)) {
+    //                                 outfile_stream.reset();
+    //                                 document = lunasvg::Document::loadFromFile(cached_path.c_str());
+    //                             } else  {
+    //                                 LOG_ERROR(eka2l1::FRONTEND_UI, "Icon for app {} can't be decoded!", header.type, app_name);
+    //                                 outfile_stream.reset();
+
+    //                                 eka2l1::common::remove(cached_path);
+    //                             }
+    //                         }
+    //                     }
+    //                 }
+    //             }
+                
+    //             if (document) {
+    //                 std::uint32_t width = document->width();
+    //                 std::uint32_t height = document->height();
+    //                 jobject source_bitmap = make_new_bitmap(env, width, height);
+    //                 void *data_to_write = nullptr;
+    //                 int result = 0;//AndroidBitmap_lockPixels(env, source_bitmap, &data_to_write);获取原始图像
+    //                 if (result < 0) {
+    //                     env->DeleteLocalRef(source_bitmap);
+    //                     env->DeleteLocalRef(jicons);
+    //                     return nullptr;
+    //                 }
+
+    //                 auto bitmap = lunasvg::Bitmap(reinterpret_cast<std::uint8_t *>(data_to_write),
+    //                                               width, height, width * 4);
+    //                 lunasvg::Matrix matrix{ 1, 0, 0, 1, 0, 0 };
+    //                 document->render(bitmap, matrix);
+    //                 bitmap.convertToRGBA();
+
+    //                 //AndroidBitmap_unlockPixels(env, source_bitmap);
+
+    //                 env->SetObjectArrayElement(jicons, 0, source_bitmap);
+    //                 return jicons;
+    //             }
+    //         }
+    //     } else if (path_ext == u".mbm") {
+    //         eka2l1::symfile file_route = io->open_file(reg->icon_file_path, READ_MODE | BIN_MODE);
+    //         if (file_route) {
+    //             eka2l1::ro_file_stream file_route_stream(file_route.get());
+    //             eka2l1::loader::mbm_file file_mbm_parser(reinterpret_cast<eka2l1::common::ro_stream *>(&file_route_stream));
+
+    //             if (file_mbm_parser.do_read_headers() && !file_mbm_parser.sbm_headers.empty()) {
+    //                 eka2l1::loader::sbm_header *icon_header = &file_mbm_parser.sbm_headers[0];
+
+    //                 jobject source_bitmap = make_new_bitmap(env, icon_header->size_pixels.x,
+    //                     icon_header->size_pixels.y);
+    //                 void *data_to_write = nullptr;
+    //                 int result = 0;//AndroidBitmap_lockPixels(env, source_bitmap, &data_to_write);
+    //                 if (result < 0) {
+    //                     env->DeleteLocalRef(source_bitmap);
+    //                     env->DeleteLocalRef(jicons);
+    //                     return nullptr;
+    //                 }
+
+    //                 eka2l1::common::wo_buf_stream converted_write_stream(reinterpret_cast<std::uint8_t *>(data_to_write),
+    //                     icon_header->size_pixels.x * icon_header->size_pixels.y * 4);
+
+    //                 if (!eka2l1::epoc::convert_to_rgba8888(fbsserv, file_mbm_parser, 0, converted_write_stream)) {
+    //                     env->DeleteLocalRef(source_bitmap);
+    //                 } else {
+    //                    // AndroidBitmap_unlockPixels(env, source_bitmap);
+
+    //                     env->SetObjectArrayElement(jicons, 0, source_bitmap);
+    //                     return jicons;
+    //                 }
+    //             }
+    //         }
+    //     } else {
+    //         std::optional<eka2l1::apa_app_masked_icon_bitmap> icon_pair = alserv->get_icon(*reg, 0);
+
+    //         if (icon_pair.has_value()) {
+    //             eka2l1::epoc::bitwise_bitmap *main_bitmap = icon_pair->first;
+    //             jobject source_bitmap = make_new_bitmap(env, main_bitmap->header_.size_pixels.x,
+    //                 main_bitmap->header_.size_pixels.y);
+    //             void *data_to_write = nullptr;
+    //             int result = 0;//AndroidBitmap_lockPixels(env, source_bitmap, &data_to_write);
+    //             if (result < 0) {
+    //                 env->DeleteLocalRef(source_bitmap);
+    //                 env->DeleteLocalRef(jicons);
+    //                 return nullptr;
+    //             }
+
+    //             eka2l1::common::wo_buf_stream main_bitmap_buf(reinterpret_cast<std::uint8_t *>(data_to_write),
+    //                 main_bitmap->header_.size_pixels.x * main_bitmap->header_.size_pixels.y * 4);
+
+    //             if (!eka2l1::epoc::convert_to_rgba8888(fbsserv, main_bitmap, main_bitmap_buf)) {
+    //                 LOG_ERROR(eka2l1::FRONTEND_UI, "Unable to load main icon of app {}", app_name);
+    //                 env->DeleteLocalRef(source_bitmap);
+    //             } else {
+    //                 //AndroidBitmap_unlockPixels(env, source_bitmap);
+    //                 env->SetObjectArrayElement(jicons, 0, source_bitmap);
+    //                 if (icon_pair->second) {
+    //                     eka2l1::epoc::bitwise_bitmap *second_bitmap = icon_pair->second;
+
+    //                     jobject mask_bitmap = make_new_bitmap(env, main_bitmap->header_.size_pixels.x,
+    //                         main_bitmap->header_.size_pixels.y);
+    //                     result = 0;//AndroidBitmap_lockPixels(env, mask_bitmap, &data_to_write);
+    //                     if (result < 0) {
+    //                         env->DeleteLocalRef(mask_bitmap);
+    //                         return jicons;
+    //                     }
+
+    //                     eka2l1::common::wo_buf_stream second_bitmap_buf(reinterpret_cast<std::uint8_t *>(data_to_write),
+    //                         second_bitmap->header_.size_pixels.x * second_bitmap->header_.size_pixels.y * 4);
+
+    //                     if (!eka2l1::epoc::convert_to_rgba8888(fbsserv, second_bitmap, second_bitmap_buf, true)) {
+    //                         LOG_ERROR(eka2l1::FRONTEND_UI, "Unable to load mask bitmap icon of app {}", app_name);
+    //                         env->DeleteLocalRef(mask_bitmap);
+    //                     } else {
+    //                         //AndroidBitmap_unlockPixels(env, mask_bitmap);
+    //                         env->SetObjectArrayElement(jicons, 1, mask_bitmap);
+    //                     }
+    //                 }
+    //                 return jicons;
+    //             }
+    //         }
+    //     }
+    //     env->DeleteLocalRef(jicons);
+    //     return nullptr;
+    // }
+
+    std::string u16string_to_string(const std::u16string& u16str) {
+        std::string result;
+        for (char16_t c : u16str) {
+            // 将 UTF-16 代码单元转换为 UTF-8 字节序列
+            if (c <= 0x7F) {
+                // 1 字节字符
+                result += static_cast<char>(c);
+            } else if (c <= 0x7FF) {
+                // 2 字节字符
+                result += static_cast<char>(0xC0 | ((c >> 6) & 0x1F));
+                result += static_cast<char>(0x80 | (c & 0x3F));
+            } else if (c <= 0xFFFF) {
+                // 3 字节字符（代理对需额外处理）
+                result += static_cast<char>(0xE0 | ((c >> 12) & 0x0F));
+                result += static_cast<char>(0x80 | ((c >> 6) & 0x3F));
+                result += static_cast<char>(0x80 | (c & 0x3F));
+            } else if (c <= 0x10FFFF) {
+                // 4 字节字符（需处理代理对）
+                // 此处简化逻辑，实际需检测代理对并合并
+                // 例如：处理代理对时，需将两个 char16_t 合并为一个码点
+                // 此示例假设输入不含代理对，仅处理单字符
+                result += static_cast<char>(0xF0 | ((c >> 18) & 0x07));
+                result += static_cast<char>(0x80 | ((c >> 12) & 0x3F));
+                result += static_cast<char>(0x80 | ((c >> 6) & 0x3F));
+                result += static_cast<char>(0x80 | (c & 0x3F));
+            }
+        }
+        return result;
+    }
+
+    namespace fs = std::filesystem; // 简化命名空间
+    std::string launcher::get_app_icon_path(std::uint32_t uid, std::string p) {
+        apa_app_registry *reg = alserv->get_registration(uid);
+        if (!reg) {
+            return "default.svg";
+        }
+
+        std::cout<<"icon:"<<u16string_to_string(reg->icon_file_path)<<std::endl;
+
+        std::string app_name = common::ucs2_to_utf8(reg->mandatory_info.long_caption.to_std_string(nullptr));
+        io_system *io = sys->get_io_system();
+
+        auto pn = fmt::format("{}.png",
+            common::pystr(app_name).strip_reserverd().strip().std_str());
+        std::replace(pn.begin(), pn.end(), ' ', '-');
+        auto pngname = p+pn;
+
+        fs::path file_path(pngname);
+        fs::path dir = file_path.parent_path();
+        //如果目录不存在，递归创建所有父目录
+        if (!fs::exists(dir)) {
+            fs::create_directories(dir);
+            std::cout << "Created directories: " << dir << std::endl;
+        }
+
+        const std::u16string path_ext = eka2l1::common::lowercase_ucs2_string(eka2l1::path_extension(reg->icon_file_path));
+
+        if (path_ext == u".mif") {
+            eka2l1::symfile file_route = io->open_file(reg->icon_file_path, READ_MODE | BIN_MODE);
+            eka2l1::common::create_directories("cache");
+
+            if (file_route) {
+                const std::uint64_t mif_last_modified = file_route->last_modify_since_0ad();
+                const std::string cached_path = fmt::format("cache/debinarized_{}.svg",
+                    common::pystr(app_name).strip_reserverd().strip().std_str());
+
+                std::unique_ptr<lunasvg::Document> document;
+
+                if (eka2l1::common::exists(cached_path)) {
+                    if (eka2l1::common::get_last_modifiy_since_ad(eka2l1::common::utf8_to_ucs2(cached_path)) >= mif_last_modified) {
+                        document = lunasvg::Document::loadFromFile(cached_path.c_str());
+                    }
+                }
+                
+                eka2l1::ro_file_stream file_route_stream(file_route.get());
+                eka2l1::loader::mif_file file_mif_parser(reinterpret_cast<eka2l1::common::ro_stream *>(&file_route_stream));
+
+                if (!document && file_mif_parser.do_parse()) {
+                    std::vector<std::uint8_t> data;
+                    int dest_size = 0;
+                    if (file_mif_parser.read_mif_entry(0, nullptr, dest_size)) {
+                        if (dest_size != 0) {
+                            data.resize(dest_size);
+                            file_mif_parser.read_mif_entry(0, data.data(), dest_size);
+
+                            eka2l1::common::ro_buf_stream inside_stream(data.data(), data.size());
+                            std::unique_ptr<eka2l1::common::wo_std_file_stream> outfile_stream =
+                                    std::make_unique<eka2l1::common::wo_std_file_stream>(cached_path, true);
+
+                            eka2l1::loader::mif_icon_header header;
+                            inside_stream.read(&header, sizeof(eka2l1::loader::mif_icon_header));
+
+                            std::vector<eka2l1::loader::svgb_convert_error_description> errors;
+                            std::vector<eka2l1::loader::nvg_convert_error_description> errors_nvg;
+
+                            if (header.type == eka2l1::loader::mif_icon_type_svg) {
+                                if (!eka2l1::loader::convert_svgb_to_svg(inside_stream, *outfile_stream, errors)) {
+                                    if (errors[0].reason_ == eka2l1::loader::svgb_convert_error_invalid_file) {
+                                        outfile_stream->write(reinterpret_cast<const char *>(data.data()) + sizeof(eka2l1::loader::mif_icon_header), data.size() - sizeof(eka2l1::loader::mif_icon_header));
+                                    }
+                                }
+
+                                outfile_stream.reset();
+                                document = lunasvg::Document::loadFromFile(cached_path.c_str());
+                            } else {
+                                inside_stream = eka2l1::common::ro_buf_stream(data.data() + sizeof(eka2l1::loader::mif_icon_header),
+                                                                              data.size() - sizeof(eka2l1::loader::mif_icon_header));
+
+                                if (eka2l1::loader::convert_nvg_to_svg(inside_stream, *outfile_stream, errors_nvg)) {
+                                    outfile_stream.reset();
+                                    document = lunasvg::Document::loadFromFile(cached_path.c_str());
+
+                                } else  {
+                                    LOG_ERROR(eka2l1::FRONTEND_UI, "Icon for app {} can't be decoded!", header.type, app_name);
+                                    outfile_stream.reset();
+
+                                    eka2l1::common::remove(cached_path);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // if(document)
+                // {
+                //     std::cout<<"保存app图标:"<<app_name<<std::endl;
+                //     auto bitmap = document->renderToBitmap(document->width(),document->height(),0x00000000);
+    
+                //     if(bitmap.valid())
+                //     {
+                //         bitmap.convertToRGBA();
+
+                //         auto pngname = fmt::format("sis/{}.png",
+                //             common::pystr(app_name).strip_reserverd().strip().std_str());
+                //         std::replace(pngname.begin(), pngname.end(), ' ', '-');
+
+                //         fs::path file_path(pngname);
+                //         fs::path dir = file_path.parent_path();
+                //         //如果目录不存在，递归创建所有父目录
+                //         if (!fs::exists(dir)) {
+                //             fs::create_directories(dir);
+                //             std::cout << "Created directories: " << dir << std::endl;
+                //         }
+
+                //         stbi_write_png(pngname.c_str(), bitmap.width(), bitmap.height(), 4, bitmap.data(), 0);
+                //     }
+
+                // }
+
+                if (document) {
+                    std::uint32_t width = document->width();
+                    std::uint32_t height = document->height();
+                    //jobject source_bitmap = make_new_bitmap(env, width, height);
+                    void *data_to_write = malloc(width*height*4);
+                    //int result = 0;//AndroidBitmap_lockPixels(env, source_bitmap, &data_to_write);获取source_bitmap原始图像指针
+                    //if (result < 0) {
+                        //env->DeleteLocalRef(source_bitmap);
+                        //env->DeleteLocalRef(jicons);
+                        //return nullptr;
+                    //}
+
+                    auto bitmap = lunasvg::Bitmap(reinterpret_cast<std::uint8_t *>(data_to_write),
+                                                  width, height, width * 4);
+                    lunasvg::Matrix matrix{ 1, 0, 0, 1, 0, 0 };
+                    document->render(bitmap, matrix);
+                    bitmap.convertToRGBA();
+
+                    stbi_write_png(pngname.c_str(), width, height, 4, data_to_write, 0);
+                    free(data_to_write);
+
+
+                    //printf("icon width:%d height:%d \n",width, height);
+
+                    //save_rgba_to_png((const unsigned char* )data_to_write, width, height, path);
+
+                    //AndroidBitmap_unlockPixels(env, source_bitmap);
+
+                    //env->SetObjectArrayElement(jicons, 0, source_bitmap);
+                }
+
+                return cached_path;
+            }
+        } else if (path_ext == u".mbm") {
+            eka2l1::symfile file_route = io->open_file(reg->icon_file_path, READ_MODE | BIN_MODE);
+            if (file_route) {
+                eka2l1::ro_file_stream file_route_stream(file_route.get());
+                eka2l1::loader::mbm_file file_mbm_parser(reinterpret_cast<eka2l1::common::ro_stream *>(&file_route_stream));
+
+                if (file_mbm_parser.do_read_headers() && !file_mbm_parser.sbm_headers.empty()) {
+                    eka2l1::loader::sbm_header *icon_header = &file_mbm_parser.sbm_headers[0];
+
+                    //jobject source_bitmap = make_new_bitmap(env, icon_header->size_pixels.x,
+                        //icon_header->size_pixels.y);
+                    void *data_to_write = malloc(icon_header->size_pixels.x*icon_header->size_pixels.y*4);
+                    //int result = 0;//AndroidBitmap_lockPixels(env, source_bitmap, &data_to_write);
+                    //if (result < 0) {
+                        //env->DeleteLocalRef(source_bitmap);
+                        //env->DeleteLocalRef(jicons);
+                        //return nullptr;
+                    //}
+
+                    eka2l1::common::wo_buf_stream converted_write_stream(reinterpret_cast<std::uint8_t *>(data_to_write),
+                        icon_header->size_pixels.x * icon_header->size_pixels.y * 4);
+
+                    if (!eka2l1::epoc::convert_to_rgba8888(fbsserv, file_mbm_parser, 0, converted_write_stream)) {
+                        LOG_ERROR(eka2l1::FRONTEND_UI, "Unable to load main icon of app {}", app_name);
+                        //env->DeleteLocalRef(source_bitmap);
+                    } else {
+                        stbi_write_png(pngname.c_str(), icon_header->size_pixels.x, icon_header->size_pixels.y, 4, data_to_write, 0);
+                        free(data_to_write);
+                        // AndroidBitmap_unlockPixels(env, source_bitmap);
+                        //env->SetObjectArrayElement(jicons, 0, source_bitmap);
+                        return "default.svg";
+                    }
+                }
+            }
+        } else {
+            std::optional<eka2l1::apa_app_masked_icon_bitmap> icon_pair = alserv->get_icon(*reg, 0);
+
+            if (icon_pair.has_value()) {
+                eka2l1::epoc::bitwise_bitmap *main_bitmap = icon_pair->first;
+                //jobject source_bitmap = make_new_bitmap(env, main_bitmap->header_.size_pixels.x,
+                   // main_bitmap->header_.size_pixels.y);
+                void *data_to_write = malloc(main_bitmap->header_.size_pixels.x*main_bitmap->header_.size_pixels.y*4);
+                //int result = 0;//AndroidBitmap_lockPixels(env, source_bitmap, &data_to_write);
+                //if (result < 0) {
+                    //env->DeleteLocalRef(source_bitmap);
+                    //env->DeleteLocalRef(jicons);
+                    //return nullptr;
+                //}
+
+                eka2l1::common::wo_buf_stream main_bitmap_buf(reinterpret_cast<std::uint8_t *>(data_to_write),
+                    main_bitmap->header_.size_pixels.x * main_bitmap->header_.size_pixels.y * 4);
+
+                if (!eka2l1::epoc::convert_to_rgba8888(fbsserv, main_bitmap, main_bitmap_buf)) {
+                    LOG_ERROR(eka2l1::FRONTEND_UI, "Unable to load main icon of app {}", app_name);
+                    //env->DeleteLocalRef(source_bitmap);
+                } else {
+                    stbi_write_png(pngname.c_str(), main_bitmap->header_.size_pixels.x, main_bitmap->header_.size_pixels.y, 4, data_to_write, 0);
+                    free(data_to_write);
+                    return "default.svg";
+                    //AndroidBitmap_unlockPixels(env, source_bitmap);
+                    //env->SetObjectArrayElement(jicons, 0, source_bitmap);
+                    if (icon_pair->second) {
+                        eka2l1::epoc::bitwise_bitmap *second_bitmap = icon_pair->second;
+
+                        //jobject mask_bitmap = make_new_bitmap(env, main_bitmap->header_.size_pixels.x,
+                            //main_bitmap->header_.size_pixels.y);
+                        //result = 0;//AndroidBitmap_lockPixels(env, mask_bitmap, &data_to_write);
+                        //if (result < 0) {
+                            //env->DeleteLocalRef(mask_bitmap);
+                            //return nullptr;
+                        //}
+
+                        eka2l1::common::wo_buf_stream second_bitmap_buf(reinterpret_cast<std::uint8_t *>(data_to_write),
+                            second_bitmap->header_.size_pixels.x * second_bitmap->header_.size_pixels.y * 4);
+
+                        if (!eka2l1::epoc::convert_to_rgba8888(fbsserv, second_bitmap, second_bitmap_buf, true)) {
+                            LOG_ERROR(eka2l1::FRONTEND_UI, "Unable to load mask bitmap icon of app {}", app_name);
+                            //env->DeleteLocalRef(mask_bitmap);
+                        } else {
+                            //AndroidBitmap_unlockPixels(env, mask_bitmap);
+                            //env->SetObjectArrayElement(jicons, 1, mask_bitmap);
+                        }
+                    }
+                    return "default.svg";
+                }
+            }
+        }
+        //env->DeleteLocalRef(jicons);
+        return "default.svg";
+    }
+
+    void launcher::launch_app(std::uint32_t uid) {
+        apa_app_registry *reg = alserv->get_registration(uid);
+
+        epoc::apa::command_line cmdline;
+        cmdline.launch_cmd_ = epoc::apa::command_create;
+
+        kern->lock();
+        alserv->launch_app(*reg, cmdline, nullptr, [&](kernel::process *pr) {
+
+            printf("app exit\n");
+            cleanup();
+            exit(0);
+        });
+
+        kern->unlock();
+    }
+
+    package::installation_result launcher::install_app(std::string &path) {
+        std::u16string upath = common::utf8_to_ucs2(path);
+        drive_number install_drive = drive_number::drive_e;
+
+        if (sys->is_s80_device_active()) {
+            install_drive = drive_number::drive_d;
+        }
+
+        return static_cast<package::installation_result>(sys->install_package(upath, install_drive));
+    }
+
+    std::vector<std::string> launcher::get_devices() {
+        device_manager *dvc_mngr = sys->get_device_manager();
+        auto &dvcs = dvc_mngr->get_devices();
+        std::vector<std::string> info;
+        for (auto &device : dvcs) {
+            std::string name = device.model;
+            info.push_back(name);
+        }
+        return info;
+    }
+
+    std::vector<std::string> launcher::get_device_firwmare_codes() {
+        device_manager *dvc_mngr = sys->get_device_manager();
+        auto &dvcs = dvc_mngr->get_devices();
+        std::vector<std::string> info;
+        for (auto &device : dvcs) {
+            std::string name = device.firmware_code;
+            info.push_back(name);
+        }
+        return info;
+    }
+
+    void launcher::set_language_to_property(const language new_one) {
+        property_ptr lang_prop = kern->get_prop(epoc::SYS_CATEGORY, epoc::LOCALE_LANG_KEY);
+        auto current_lang = lang_prop->get_pkg<epoc::locale_language>();
+
+        if (!current_lang) {
+            return;
+        }
+
+        current_lang->language = static_cast<epoc::language>(new_one);
+        lang_prop->set<epoc::locale_language>(current_lang.value());
+    }
+
+    void launcher::set_language_current(const language lang) {
+        conf->language = static_cast<int>(lang);
+        sys->set_system_language(lang);
+        set_language_to_property(lang);
+    }
+
+    void launcher::set_current_device(std::uint32_t id, const bool temporary) {
+        device_manager *dvc_mngr = sys->get_device_manager();
+        auto &dvcs = dvc_mngr->get_devices();
+
+        if (conf->device != id) {
+            // Check if the language currently in config exists in the new device
+            if (std::find(dvcs[id].languages.begin(), dvcs[id].languages.end(), conf->language) == dvcs[id].languages.end()) {
+                set_language_current(static_cast<language>(dvcs[id].default_language_code));
+            }
+
+            if (temporary) {
+                sys->set_device(id);
+                retrieve_servers();
+            } else {
+                // Permanent set in Android backend will reset the native side
+                conf->device = id;
+                conf->serialize();
+
+                device_manager *dvcmngr = sys->get_device_manager();
+                if (dvcmngr) {
+                    dvcmngr->set_current(id);
+                }
+            }
+        }
+
+    }
+
+    void launcher::set_device_name(std::uint32_t id, const char *name) {
+        device_manager *dvc_mngr = sys->get_device_manager();
+        auto &dvcs = dvc_mngr->get_devices();
+
+        if (id < dvcs.size()) {
+            dvcs[id].model = name;
+            dvc_mngr->save_devices();
+        }
+    }
+
+    void launcher::rescan_devices() {
+        sys->rescan_devices(drive_z);
+    }
+
+    std::uint32_t launcher::get_current_device() {
+        return conf->device;
+    }
+
+    bool launcher::does_rom_need_rpkg(const std::string &rom_path) {
+        return loader::should_install_requires_additional_rpkg(rom_path);
+    }
+
+    device_installation_error launcher::install_device(std::string &rpkg_path, std::string &rom_path, bool install_rpkg) {
+        std::string firmware_code;
+        device_manager *dvc_mngr = sys->get_device_manager();
+        device_installation_error result;
+
+        
+        std::string root_c_path = add_path(conf->storage, "drives/c/");
+        std::string root_e_path = add_path(conf->storage, "drives/e/");
+        std::string root_z_path = add_path(conf->storage, "drives/z/");
+        std::string rom_resident_path = add_path(conf->storage, "roms/");
+
+        std::cout<<rom_resident_path<<std::endl;
+
+        eka2l1::common::create_directories(rom_resident_path);
+
+        bool need_add_rpkg = false;
+
+        printf("launcher::install_device\n");
+
+        if (install_rpkg) {
+            if (eka2l1::loader::should_install_requires_additional_rpkg(rom_path)) {
+                printf("launcher::install_device2\n");
+                result = eka2l1::loader::install_rpkg(dvc_mngr, rpkg_path, root_z_path, firmware_code, nullptr, nullptr);
+                need_add_rpkg = true;
+            } else {
+                result = eka2l1::loader::install_rom(dvc_mngr, rom_path, rom_resident_path, root_z_path, nullptr, nullptr);
+            }
+        } else {
+            result = eka2l1::install_firmware(
+                dvc_mngr, rom_path, root_c_path, root_e_path, root_z_path, rom_resident_path,
+                [](const std::vector<std::string> &variants) -> int { return 0; }, nullptr, nullptr);
+        }
+
+        if (result != device_installation_none) {
+            return result;
+        }
+
+        dvc_mngr->save_devices();
+
+        if (need_add_rpkg) {
+            const std::string rom_directory = add_path(conf->storage, add_path("roms", firmware_code + "\\"));
+
+            eka2l1::common::create_directories(rom_directory);
+            common::copy_file(rom_path, add_path(rom_directory, "SYM.ROM"), true);
+        }
+
+        return device_installation_none;
+    }
+
+    std::vector<std::string> launcher::get_packages() {
+        manager::packages *manager = sys->get_packages();
+        std::vector<std::string> info;
+        for (const auto &[pkg_uid, pkg] : *manager) {
+            if (!pkg.is_removable) {
+                continue;
+            }
+            std::string name = common::ucs2_to_utf8(pkg.package_name);
+            std::string uid = std::to_string(pkg.uid);
+            std::string index = std::to_string(pkg.index);
+            info.push_back(uid);
+            info.push_back(index);
+            info.push_back(name);
+        }
+        return info;
+    }
+
+    void launcher::uninstall_package(std::uint32_t uid, std::int32_t ext_index) {
+        manager::packages *manager = sys->get_packages();
+        package::object *obj = manager->package(uid, ext_index);
+
+        if (obj)
+            manager->uninstall_package(*obj);
+    }
+
+    void launcher::mount_sd_card(std::string &path) {
+        std::u16string upath = common::utf8_to_ucs2(path);
+
+        io_system *io = sys->get_io_system();
+        io->unmount(drive_e);
+        io->mount_physical_path(drive_e, drive_media::physical,
+            io_attrib_removeable | io_attrib_write_protected, upath);
+    }
+
+    void launcher::load_config() {
+        conf->deserialize();
+    }
+
+    void launcher::set_language(std::uint32_t language_id) {
+        set_language_current(static_cast<language>(language_id));
+    }
+
+    void launcher::set_rtos_level(std::uint32_t level) {
+        kern->get_ntimer()->set_realtime_level(static_cast<realtime_level>(level));
+    }
+
+    void launcher::update_app_setting(std::uint32_t uid) {
+        kern->get_app_settings()->update_setting(uid);
+    }
+
+    void launcher::draw(drivers::graphics_command_builder &builder, epoc::screen *scr,
+                        std::uint32_t window_width, std::uint32_t window_height) {
+        eka2l1::rect viewport;
+        eka2l1::rect src;
+        eka2l1::rect dest;
+
+        drivers::filter_option filter = conf->nearest_neighbor_filtering ? drivers::filter_option::nearest : drivers::filter_option::linear;
+
+        eka2l1::vec2 swapchain_size(window_width, window_height);
+        viewport.size = swapchain_size;
+
+        builder.set_swapchain_size(swapchain_size);
+
+        builder.backup_state();
+        builder.bind_bitmap(0);
+
+        builder.set_feature(drivers::graphics_feature::cull, false);
+        builder.set_feature(drivers::graphics_feature::depth_test, false);
+        builder.set_feature(eka2l1::drivers::graphics_feature::blend, false);
+        builder.set_feature(drivers::graphics_feature::clipping, false);
+        builder.set_feature(drivers::graphics_feature::stencil_test, false);
+        builder.set_viewport(viewport);
+
+        builder.clear({ background_color_[0] / 255.0f, background_color_[1] / 255.0f, background_color_[2] / 255.0f, 1.0f, 0.0f, 0.0f },
+            drivers::draw_buffer_bit_color_buffer);
+
+        if (!background_img_ && !background_img_path_.empty()) {
+            int x, y, comp = 0;
+
+            FILE *f = eka2l1::common::open_c_file(background_img_path_, "rb");
+            if (!f) {
+                LOG_ERROR(eka2l1::FRONTEND_UI, "Unable to load background texture!");
+            } else {
+                // Not load again even if fail
+                background_img_path_.clear();
+                stbi_uc *data = stbi_load_from_file(f, &background_width, &background_height, &comp, STBI_rgb_alpha);
+
+                background_img_ = eka2l1::drivers::create_texture(sys->get_graphics_driver(), 2, 0,
+                                                                  eka2l1::drivers::texture_format::rgba, eka2l1::drivers::texture_format::rgba,
+                                                                  eka2l1::drivers::texture_data_type::ubyte, data, x * y * 4, eka2l1::vec3(x, y, 0));
+
+                if (!background_img_) {
+                    LOG_ERROR(eka2l1::FRONTEND_UI, "Unable to create background texture!");
+                } else {
+                    builder.set_texture_filter(background_img_, true, eka2l1::drivers::filter_option::nearest);
+                }
+
+                stbi_image_free(data);
+            }
+        }
+
+        if (background_img_ != 0) {
+            eka2l1::rect draw_image_rect;
+            draw_image_rect.size = swapchain_size;
+
+            if (keep_bg_aspect_) {
+                float bg_aspect_ratio = static_cast<float>(background_width) / background_height;
+                bool do_potrait_ap_keeping = false;
+
+                if (swapchain_size.x > swapchain_size.y) {
+                    do_potrait_ap_keeping = (swapchain_size.y * bg_aspect_ratio <= draw_image_rect.size.x);
+                } else {
+                    do_potrait_ap_keeping = (swapchain_size.x / bg_aspect_ratio > draw_image_rect.size.y);
+                }
+
+                if (do_potrait_ap_keeping) {
+                    draw_image_rect.size.x = swapchain_size.x;
+                    draw_image_rect.size.y = static_cast<int>(swapchain_size.x / bg_aspect_ratio);
+                    draw_image_rect.top.y = (swapchain_size.y - draw_image_rect.size.y) / 2;
+                } else {
+                    draw_image_rect.size.y = swapchain_size.y;
+                    draw_image_rect.size.x = static_cast<int>(swapchain_size.y * bg_aspect_ratio);
+                    draw_image_rect.top.x = (swapchain_size.x - draw_image_rect.size.x) / 2;
+                }
+            }
+
+            builder.set_feature(eka2l1::drivers::graphics_feature::blend, true);
+            builder.blend_formula(eka2l1::drivers::blend_equation::add, eka2l1::drivers::blend_equation::add,
+                                  eka2l1::drivers::blend_factor::frag_out_alpha, eka2l1::drivers::blend_factor::one_minus_frag_out_alpha,
+                                  eka2l1::drivers::blend_factor::one, eka2l1::drivers::blend_factor::one_minus_frag_out_alpha);
+            builder.set_brush_color_detail(eka2l1::vec4(255, 255, 255, eka2l1::common::clamp<int>(0, 255, background_img_opacity_ * 255)));
+            builder.draw_bitmap(background_img_, 0, draw_image_rect, eka2l1::rect(), eka2l1::vec2(0, 0), 0.0f, eka2l1::drivers::bitmap_draw_flag_use_brush);
+            builder.set_feature(eka2l1::drivers::graphics_feature::blend, false);
+        }
+
+        if (scr) {
+
+            auto &crr_mode = scr->current_mode();
+
+            eka2l1::vec2 size = crr_mode.size;//240*320 可能跟设备或者app有关
+            //printf("crr_mode.size: %d %d scale_type_:%d\n",crr_mode.size.x,crr_mode.size.y,scale_type_);
+            if ((scr->ui_rotation % 180) != 0) {
+                std::swap(size.x, size.y);
+            }
+            
+
+            float width = 0;
+            float height = 0;
+            std::uint32_t x = 0;
+            std::uint32_t y = 0;
+
+            switch (scale_type_) {
+                case 0://原版app大小
+                    // without scaling
+                    width = size.x;
+                    height = size.y;
+                    break;
+                case 1://宽度拉伸到窗口大小
+                    // try to fit in width
+                    width = swapchain_size.x;//swapchain_size是窗口大小
+                    height = size.y * swapchain_size.x / size.x;
+
+                    if (height > swapchain_size.y) {
+                        // if height is too big, then fit in height
+                        height = swapchain_size.y;
+                        width = size.x * swapchain_size.y / size.y;
+                    }
+                    break;
+                case 2:
+                    // scaling without preserving the aspect ratio:
+                    // just stretch the picture to full screen
+                    // Upscale factor is the min factor of scale width and height
+                    width = swapchain_size.x;
+                    height = swapchain_size.y;
+                    break;
+            }
+            //拉伸
+            width = width * scale_ratio_ / 100;
+            height = height * scale_ratio_ / 100;
+
+            switch (gravity_) {
+                case 0: // left
+                    x = 0;
+                    y = (swapchain_size.y - height) / 2;
+                    break;
+                case 1: // top
+                    x = (swapchain_size.x - width) / 2;
+                    y = 0;
+                    break;
+                case 2: // center
+                    x = (swapchain_size.x - width) / 2;
+                    y = (swapchain_size.y - height) / 2;
+                    break;
+                case 3: // right
+                    x = swapchain_size.x - width;
+                    y = (swapchain_size.y - height) / 2;
+                    break;
+                case 4: // bottom
+                    x = (swapchain_size.x - width) / 2;
+                    y = swapchain_size.y - height;
+                    break;
+            }
+
+            const float scale_x = width / static_cast<float>(size.x);
+            const float scale_y = height / static_cast<float>(size.y);
+
+            scr->set_native_scale_factor(sys->get_graphics_driver(), scale_x, scale_y);
+
+            scr->absolute_pos.x = static_cast<int>(x);
+            scr->absolute_pos.y = static_cast<int>(y);
+
+            dest.top = eka2l1::vec2(x, y);
+            dest.size = eka2l1::vec2(width, height);
+
+            drivers::advance_draw_pos_around_origin(dest, scr->ui_rotation);
+
+
+            if (scr->ui_rotation % 180 != 0) {
+                std::swap(dest.size.x, dest.size.y);
+            }
+
+            src.size = crr_mode.size;
+            src.size *= scr->display_scale_factor;
+
+            std::uint32_t flags = 0;
+            if (scr->flags_ & epoc::screen::FLAG_SCREEN_UPSCALE_FACTOR_LOCK) {
+                flags |= drivers::bitmap_draw_flag_use_upscale_shader;
+            }
+
+            builder.set_texture_filter(scr->screen_texture, true, filter);
+            builder.set_texture_filter(scr->screen_texture, false, filter);
+            builder.draw_bitmap(scr->screen_texture, 0, dest, src, eka2l1::vec2(0, 0),
+                                 static_cast<float>(scr->ui_rotation), flags);
+        }
+
+        builder.load_backup_state();
+    }
+
+    std::vector<std::string> launcher::get_language_ids() {
+        std::vector<std::string> languages;
+
+        device_manager *dvc_mngr = sys->get_device_manager();
+        auto &dvcs = dvc_mngr->get_devices();
+        if (!dvcs.empty()) {
+            auto &dvc = dvcs[conf->device];
+            for (int language : dvc.languages) {
+                languages.push_back(std::to_string(language));
+            }
+        }
+        return languages;
+    }
+
+    std::vector<std::string> launcher::get_language_names() {
+        std::vector<std::string> languages;
+
+        device_manager *dvc_mngr = sys->get_device_manager();
+        auto &dvcs = dvc_mngr->get_devices();
+        if (!dvcs.empty()) {
+            auto &dvc = dvcs[conf->device];
+            for (int language : dvc.languages) {
+                const std::string lang_name = common::get_language_name_by_code(language);
+                languages.push_back(lang_name);
+            }
+        }
+        return languages;
+    }
+
+    void launcher::set_screen_params(std::uint32_t background_color, std::uint32_t scale_ratio,
+                                     std::uint32_t scale_type, std::uint32_t gravity,
+                                     const std::string &bg_img_path,
+                                     float bg_img_opacity, bool bg_keep_aspect_ratio) {
+        background_color_[0] = (background_color >> 16) & 0xFF;
+        background_color_[1] = (background_color >> 8) & 0xFF;
+        background_color_[2] = background_color & 0xFF;
+        scale_ratio_ = scale_ratio;
+        scale_type_ = scale_type;
+        gravity_ = gravity;
+        background_img_path_ = bg_img_path;
+        background_img_opacity_ = bg_img_opacity;
+        keep_bg_aspect_ = bg_keep_aspect_ratio;
+    }
+
+    bool launcher::open_input_view(const std::u16string &initial_text, const int max_len,
+                                   drivers::ui::input_dialog_complete_callback complete_callback) {
+        if (input_complete_callback_) {
+            return false;
+        }
+
+        input_complete_callback_ = complete_callback;
+
+        std::string text = common::ucs2_to_utf8(initial_text);
+        return true;
+    }
+
+    void launcher::close_input_view() {
+        
+    }
+
+    bool launcher::open_question_dialog(const std::u16string &text, const std::u16string &button1_text,
+                              const std::u16string &button2_text,
+                              drivers::ui::yes_no_dialog_complete_callback complete_callback) {
+        if (yes_no_complete_callback_) {
+            return false;
+        }
+
+        yes_no_complete_callback_ = complete_callback;
+
+        std::string question_text_utf8 = common::ucs2_to_utf8(text);
+        std::string yes_text_utf8 = common::ucs2_to_utf8(button1_text);
+        std::string no_text_utf8 = common::ucs2_to_utf8(button2_text);
+
+        return true;
+    }
+
+    void launcher::on_finished_text_input(const std::string &text, const bool force_close) {
+        if (input_complete_callback_) {
+            input_complete_callback_(common::utf8_to_ucs2(text));
+            input_complete_callback_ = nullptr;
+        }
+    }
+
+    void launcher::on_question_dialog_finished(const int result) {
+        if (yes_no_complete_callback_) {
+            yes_no_complete_callback_(result);
+            yes_no_complete_callback_ = nullptr;
+        }
+    }
+
+    int launcher::install_ngage_game(const std::string &path) {
+        return static_cast<int>(sys->install_ngage_game_card(path,
+                                                             nullptr, nullptr));
+    }
+
+    bool launcher::install_ng2_game_licenses(const std::string &content) {
+        return rightsserv->import_ng2l(content, success_license_games, failed_license_games);
+    }
+
+    std::vector<std::string> launcher::get_success_installed_license_games() {
+        return success_license_games;
+    }
+
+    std::vector<std::string> launcher::get_failed_installed_license_games() {
+        return failed_license_games;
+    }
+
+    void launcher::set_current_mmc_id(const std::string &new_mmc_id) {
+        conf->current_mmc_id = new_mmc_id;
+    }
+
+    bool launcher::save_screenshot_to(const std::string &path) {
+        if (!winserv) {
+            return false;
+        }
+
+        epoc::screen *scr = winserv->get_current_focus_screen();
+
+        if (!scr) {
+            return false;
+        }
+
+        eka2l1::vec2 scr_size_scaled = scr->current_mode().size * scr->display_scale_factor;
+        std::size_t total_data_size = scr_size_scaled.x * scr_size_scaled.y * 4;
+
+        if (screenshot_buffer_.size() < total_data_size) {
+            screenshot_buffer_.resize(total_data_size);
+        }
+
+        if (!drivers::read_bitmap(sys->get_graphics_driver(), winserv->get_current_focus_screen()->screen_texture,
+                             eka2l1::point(0, 0), scr_size_scaled, 32, screenshot_buffer_.data())) {
+            return false;
+        }
+
+        struct write_png_context {
+            FILE *dest_file_;
+            std::string path_;
+
+            explicit write_png_context(const std::string &path)
+                : path_(path) {
+                 dest_file_ = common::open_c_file(path, "wb");
+            }
+
+            ~write_png_context() {
+                if (dest_file_) {
+                    fclose(dest_file_);
+                }
+            }
+
+            void write(void *data, int size) {
+                if (!dest_file_) {
+                    return;
+                }
+
+                if (fwrite(data, 1, size, dest_file_) != size) {
+                    fclose(dest_file_);
+                    common::remove(path_);
+
+                    dest_file_ = nullptr;
+                }
+            }
+        };
+
+        write_png_context png_write_context(path);
+        if (stbi_write_png_to_func([](void * context, void *data, int size) { (reinterpret_cast<write_png_context*>(context))->write(data, size); },
+                                   &png_write_context, scr_size_scaled.x, scr_size_scaled.y, 4, screenshot_buffer_.data(), scr_size_scaled.x * 4) == 0) {
+            return false;
+        }
+
+        return true;
+    }
+}

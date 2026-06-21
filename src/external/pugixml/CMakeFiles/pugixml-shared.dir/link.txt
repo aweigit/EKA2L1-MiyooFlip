@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC -shared -Wl,-soname,libpugixml.so.1 -o libpugixml.so.1.10 "CMakeFiles/pugixml-shared.dir/src/pugixml.cpp.o"
