@@ -953,7 +953,10 @@ namespace eka2l1::sdl2 {
             const float scale_x = width / static_cast<float>(size.x);
             const float scale_y = height / static_cast<float>(size.y);
 
-            scr->set_native_scale_factor(sys->get_graphics_driver(), scale_x, scale_y);
+            const float effective_scale_x = scale_x * conf->render_scale;
+            const float effective_scale_y = scale_y * conf->render_scale;
+
+            scr->set_native_scale_factor(sys->get_graphics_driver(), effective_scale_x, effective_scale_y);
 
             scr->absolute_pos.x = static_cast<int>(x);
             scr->absolute_pos.y = static_cast<int>(y);

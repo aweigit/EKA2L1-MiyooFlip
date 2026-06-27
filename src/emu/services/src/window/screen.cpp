@@ -691,13 +691,8 @@ namespace eka2l1::epoc {
 
         float correct_display_scale_factor = 1.0f;
 
-        // We want to keep the original display size in case it's downscale.
         if ((flags_ & FLAG_SCREEN_UPSCALE_FACTOR_LOCK) == 0) {
             correct_display_scale_factor = common::min(logic_scale_factor_x, logic_scale_factor_y);
-
-            if (correct_display_scale_factor < 1.0f) {
-                correct_display_scale_factor = 1.0f;
-            }
         }
 
         try_change_display_rescale(driver, correct_display_scale_factor);

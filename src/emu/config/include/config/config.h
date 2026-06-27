@@ -160,6 +160,7 @@ namespace eka2l1::config {
 		std::string btnet_password;
 		std::uint32_t btnet_discovery_mode{ 0 };
         bool extensive_logging{ false };
+        float render_scale{ 1.0f };
         int background_image_opacity{ 255 };
 
         std::string current_mmc_id;
