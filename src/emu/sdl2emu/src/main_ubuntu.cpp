@@ -984,6 +984,21 @@ int main(int argc, char *argv[]){
 					// 		updateMouse(key);
 					// 	}
 					// }
+
+					if(key == SDLK_LCTRL && e.key.state == SDL_PRESSED){mod=1;}
+					else if(key == SDLK_LCTRL && e.key.state == SDL_RELEASED){mod=0;}
+
+					if(mod)
+					{
+						switch (key) {
+							case SDLK_b://旋转
+								mod=0;
+								rotate=(1+rotate)%4;//连续旋转
+								emu_Emulator_rotate(90*rotate);
+								key=0;
+								break;
+						}
+					}
 					
 					if(!use_mouse)
 					{

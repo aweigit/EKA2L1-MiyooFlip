@@ -197,7 +197,6 @@ namespace eka2l1::dispatch {
         drivers::graphics_driver *driver = sys->get_graphics_driver();
         kernel_system *kern = sys->get_kernel_system();
 
-        // TODO: Update only some regions specified. Rotation makes it complicated
         epoc::screen *scr = dispatcher->winserv_->get_screens();
 
         while (scr != nullptr) {
@@ -237,8 +236,41 @@ namespace eka2l1::dispatch {
                 eka2l1::drivers::filter_option filter = (kern->get_config()->nearest_neighbor_filtering ? eka2l1::drivers::filter_option::nearest : eka2l1::drivers::filter_option::linear);
                 drivers::graphics_command_builder builder;
 
-                // Only one rectangle for now!
-                builder.update_bitmap(scr->dsa_texture, data_ptr, buffer_size, { 0, 0 }, screen_size);
+                if (num_rects == 0 || !rect_list) {
+                    builder.update_bitmap(scr->dsa_texture, data_ptr, buffer_size, { 0, 0 }, screen_size);
+                } else {
+                    // Check if dirty area exceeds 50% — if so, fall back to full upload
+                    std::uint64_t dirty_area = 0;
+                    const std::uint64_t total_area = static_cast<std::uint64_t>(screen_size.x) * screen_size.y;
+                    for (std::uint32_t i = 0; i < num_rects; i++) {
+                        dirty_area += static_cast<std::uint64_t>(rect_list[i].size.x) * rect_list[i].size.y;
+                    }
+
+                    if (dirty_area > total_area / 2) {
+                        builder.update_bitmap(scr->dsa_texture, data_ptr, buffer_size, { 0, 0 }, screen_size);
+                    } else {
+                        const std::size_t src_row_stride = static_cast<std::size_t>(screen_size.x) * 4;
+                        thread_local std::vector<char> packed_data;
+                        packed_data.reserve(buffer_size);
+
+                        for (std::uint32_t i = 0; i < num_rects; i++) {
+                            const eka2l1::rect &r = rect_list[i];
+                            if (r.size.x <= 0 || r.size.y <= 0) continue;
+
+                            const std::size_t dst_row_stride = static_cast<std::size_t>(r.size.x) * 4;
+                            packed_data.resize(static_cast<std::size_t>(r.size.y) * dst_row_stride);
+
+                            for (std::int32_t row = 0; row < r.size.y; row++) {
+                                std::memcpy(packed_data.data() + row * dst_row_stride,
+                                           data_ptr + (r.top.y + row) * src_row_stride + r.top.x * 4,
+                                           dst_row_stride);
+                            }
+
+                            builder.update_bitmap(scr->dsa_texture, packed_data.data(),
+                                                  packed_data.size(), r.top, r.size, r.size.x);
+                        }
+                    }
+                }
 
                 // NOTE: This is a hack for some apps that dont fill alpha
                 // TODO: Figure out why or better solution (maybe the display mode is not really correct?)
