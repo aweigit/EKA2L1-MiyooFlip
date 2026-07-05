@@ -197,6 +197,13 @@ Emu/NOKIA/
 1. 将游戏文件放入 `Emu/NOKIA/app` 目录 (文件名不能含空格)
 2. 运行 `./menu` 选择"安装游戏"安装
 
+### 渲染纹理降采样参数
+
+```bash
+#config.yml文件(0.5-1.0，越大越清晰，但是内存占用更高)
+render-scale: 0.5
+```
+
 ### 按键映射
 
 #### 默认映射
@@ -448,6 +455,13 @@ Copy game folders to `Emu/NOKIA/data/drives/e/system/apps`. **Note:** All filena
 #### SIS/SISX Games
 1. Place game files in `Emu/NOKIA/app` (filenames must not contain spaces)
 2. Run `./menu` and select "Install Game" to install
+
+### Render Texture Downsampling‌
+
+```bash
+#config.yml(0.5-1.0)
+render-scale: 0.5
+```
 
 ### Key Mapping
 
